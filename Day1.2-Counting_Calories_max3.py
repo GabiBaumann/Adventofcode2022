@@ -1,6 +1,9 @@
 #!/usr/bin/env python
+# SPDX-License-Identifier: GPL-3.0-only
 
 """
+Source: https://adventofcode.com/2022/day/1
+
 --- Part Two ---
 
 By the time you calculate the answer to the Elves' question, they've already realized that the Elf carrying the most Calories of food might eventually run out of snacks.
