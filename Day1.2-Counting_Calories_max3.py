@@ -16,7 +16,7 @@ Find the top three Elves carrying the most Calories. How many Calories are those
 """
 
 """
-So we need a list of top three carriers, will do a list of all sums and pop the max three times.
+So we need a list of top three carriers, will do a list of all sums, sort and use last three elements.
 """
 
 size = 0
