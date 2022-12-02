@@ -22,7 +22,7 @@ So we need a list of top three carriers, will do a list of all sums, sort and us
 size = 0
 elfs_backpacks = []
 
-with open('Day1-Input', 'r') as file:
+with open('Day01-Input', 'r') as file:
     for line in file:
         if line == "\n":
             elfs_backpacks.append(size)

@@ -53,7 +53,7 @@ So, this is the max of the sums of each block of numbers. Separate at empty line
 size = 0
 biggest = 0
 
-with open('Day1-Input', 'r') as file:
+with open('Day01-Input', 'r') as file:
     for line in file:
         if line == "\n":
             if size > biggest:
