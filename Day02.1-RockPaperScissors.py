@@ -34,7 +34,8 @@ What would your total score be if everything goes exactly according to your stra
 """
 
 """
-
+I opted for the easy code. Should work with casting to int, subtract 'X'.
+Equality is easier, so is counting as my choice == my points
 """
 score = 0
 
