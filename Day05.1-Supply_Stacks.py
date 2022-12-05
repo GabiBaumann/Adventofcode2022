@@ -93,10 +93,11 @@ with open('Day05-Input', 'r') as file:
                 initialised = True
         elif line[0] == " ":
             # make the working stacks
-            for i in range(lines,-1,-1): 
-                for j in range(len(stacks)):
-                    if init_stacks[j][i] != " ":
-                        stacks[j].append(init_stacks[j][i])
+            for i in range(len(stacks)):
+                while init_stacks[i]:
+                    fill_in = init_stacks[i].pop()
+                    if fill_in != " ":
+                        stacks[i].append(fill_in)
 
 print(stacks)
 for i in range(no_cols):
