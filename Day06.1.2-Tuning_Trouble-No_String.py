@@ -3,7 +3,7 @@
 
 ## Length of helper string with all unique characters required.
 ## That's signal length minus one, as one more is always worked on.
-## So, use strlength = 3 for 6.1, strlength = 13 for 6.2
+## Use strlength = 3 for 6.1, strlength = 13 for 6.2
 #strlength = 3
 strlength = 13
 
