@@ -47,6 +47,7 @@ while pos < len(stream):
                 cl_pos = 0
             cl_pos += i
             clear_at = max(clear_at, cl_pos)
+            break
     if clear_at < pos - 13: # this is it, then
         print(pos+1, last13)
         break

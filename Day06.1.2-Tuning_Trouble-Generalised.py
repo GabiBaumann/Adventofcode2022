@@ -27,6 +27,7 @@ while pos < len(stream):
                 cl_pos = 0
             cl_pos += i
             clear_at = max(clear_at, cl_pos)
+            break
     if clear_at < pos - strlength: # this is it
         print(pos+1, lastchars)
         break
