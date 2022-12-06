@@ -18,7 +18,7 @@ How many characters need to be processed before the first start-of-message marke
 """
 
 """
-Building on 6.1, this suggests reworking the checks therein to loop though all 14 elements. Using the simple cascading I used before would work, but ends up being way too much code. When done well, it may even handle the initialisation bits (building up the code to it's intended length. Plenty checks for < 0 ahead :)
+Building on 6.1, this suggests reworking the checks therein to loop though all 13 elements. Using the simple cascading I used before would work, but ends up being way too much code.
 """
 
 clear_at = 0
@@ -37,21 +37,20 @@ pos = 0
 while pos < len(stream):
     next_one = stream[pos]
     last13 += next_one
+    str_count = len(last13)
     for i in range(13,-1,-1):
-        #print(last14, clear_at, pos, i)
-        if len(last13) - 2 < i:
+        if str_count - 2 < i:
             continue
         elif next_one == last13[i]:
-            #print("Double: ", next_one) 
             cl_pos = pos - 13
             if cl_pos < 0:
                 cl_pos = 0
-            cl_pos +=i
+            cl_pos += i
             clear_at = max(clear_at, cl_pos)
     if clear_at < pos - 13: # this is it, then
         print(pos+1, last13)
         break
-    if len(last13) > 13:
+    if str_count > 13:
         last13 = last13[1:]
     pos +=1
 
