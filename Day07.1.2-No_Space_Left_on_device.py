@@ -95,6 +95,31 @@ Luckily, it's not that wild once you code :)
 Rather, do a dict of dirs with sums in it, adding sizes to all subdirs.
 """
 
+"""
+--- Part Two ---
+
+Now, you're ready to choose a directory to delete.
+
+The total disk space available to the filesystem is 70000000. To run the update, you need unused space of at least 30000000. You need to find a directory you can delete that will free up enough space to run the update.
+
+In the example above, the total size of the outermost directory (and thus the total amount of used space) is 48381165; this means that the size of the unused space must currently be 21618835, which isn't quite the 30000000 required by the update. Therefore, the update still requires a directory with total size of at least 8381165 to be deleted before it can run.
+
+To achieve this, you have the following options:
+
+    Delete directory e, which would increase unused space by 584.
+    Delete directory a, which would increase unused space by 94853.
+    Delete directory d, which would increase unused space by 24933642.
+    Delete directory /, which would increase unused space by 48381165.
+
+Directories e and a are both too small; deleting them would not free up enough space. However, directories d and / are both big enough! Between these, choose the smallest: d, increasing unused space by 24933642.
+
+Find the smallest directory that, if deleted, would free up enough space on the filesystem to run the update. What is the total size of that directory?
+"""
+
+fs_size = 70000000
+required = 30000000
+sizeof_dir_to_delete = fs_size
+
 cutoff = 100000
 fs = { 'R': 0 }
 line = " "
@@ -135,7 +160,6 @@ with open('Day07-Input', 'r') as file:
                     elif line[0] == "d":
                         dirname = index + "/" + line[4:]
                         fs[dirname] = 0 #presuming we just add filesizes...
-                        print(fs)
                     else:
                         filesize = int(line.split()[0])
                         h = "R"
@@ -143,10 +167,16 @@ with open('Day07-Input', 'r') as file:
                         for i in wd:
                             h += "/" + i
                             fs[h] += filesize
-                        print("File: ", fs)
+
+need_to_delete = required - (fs_size - fs["R"])
+print(need_to_delete)
+
 for i in fs:
     if fs[i] <= cutoff:
         out += fs[i]
-    print(i, fs[i], out)
+    if fs[i] >= need_to_delete:
+        sizeof_dir_to_delete = min(sizeof_dir_to_delete, fs[i])
 
-print(out)
+print("Answer for part one:", out)
+print("Answer for part two:", sizeof_dir_to_delete)
+
