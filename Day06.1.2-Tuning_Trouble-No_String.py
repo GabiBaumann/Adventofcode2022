@@ -14,13 +14,13 @@ with open('Day06-Input', 'r') as file:
     stream = file.read()
 
 for next_one in stream:
-    pos += 1
     for i in range(strlength):
-        if pos < i:
+        if pos - 1 < i:
             break
-        elif next_one == stream[pos - i - 2]:
-            clear_at = max(clear_at, pos - i - 1)
+        elif next_one == stream[pos - i - 1]:
+            clear_at = max(clear_at, pos - i)
             break
+    pos += 1
     if clear_at < pos - strlength: # this is it
         print(pos, stream[pos-strlength-1:pos])
         break
