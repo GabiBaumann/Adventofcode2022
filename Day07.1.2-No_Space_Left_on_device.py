@@ -160,8 +160,6 @@ with open('Day07-Input', 'r') as file:
                 wd.append(param)
 
 need_to_delete = required - (fs_size - fs["R"])
-print(need_to_delete)
-
 for i in fs:
     if fs[i] <= cutoff:
         out += fs[i]
@@ -170,4 +168,3 @@ for i in fs:
 
 print("Answer for part one:", out)
 print("Answer for part two:", sizeof_dir_to_delete)
-
