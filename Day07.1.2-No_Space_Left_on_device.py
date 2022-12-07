@@ -122,19 +122,36 @@ sizeof_dir_to_delete = fs_size
 
 cutoff = 100000
 fs = { 'R': 0 }
-line = " "
-me_first = True
 out = 0
 
 with open('Day07-Input', 'r') as file:
     while True:
-        if not me_first:
-            line = file.readline().rstrip()
-        me_first = False
+        line = file.readline().rstrip()
         if not line:
             break
         marker = line[0]
         if marker == "$":
+            if line[2:4] == "ls":
+                index = "R"
+                for i in wd:
+                    index += "/" + i
+                while True:
+                    line = file.readline().rstrip()
+                    if not line:
+                        break
+                    elif line[0] == "$":
+                        break
+                    elif line[0] == "d":
+                        dirname = index + "/" + line[4:]
+                        fs[dirname] = 0
+                    else:
+                        filesize = int(line.split()[0])
+                        h = "R"
+                        fs[h] += filesize
+                        for i in wd:
+                            h += "/" + i
+                            fs[h] += filesize
+
             if line[2:4] == "cd":
                 param = line[5:]
                 if param == "/":
@@ -144,29 +161,6 @@ with open('Day07-Input', 'r') as file:
                 else:
                     wd.append(param)
                 print("cd", param, wd)
-            elif line[2:4] == "ls":
-                index = "R"
-                for i in wd:
-                    index += "/" + i
-                while True:
-                    line = file.readline().rstrip()
-                    if not line:
-                        # EOF. Need a bool?
-                        break
-                    elif line[0] == "$":
-                        ## For a start, do a bool :)
-                        me_first = True
-                        break
-                    elif line[0] == "d":
-                        dirname = index + "/" + line[4:]
-                        fs[dirname] = 0 #presuming we just add filesizes...
-                    else:
-                        filesize = int(line.split()[0])
-                        h = "R"
-                        fs[h] += filesize
-                        for i in wd:
-                            h += "/" + i
-                            fs[h] += filesize
 
 need_to_delete = required - (fs_size - fs["R"])
 print(need_to_delete)
