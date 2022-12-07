@@ -129,38 +129,35 @@ with open('Day07-Input', 'r') as file:
         line = file.readline().rstrip()
         if not line:
             break
-        marker = line[0]
-        if marker == "$":
-            if line[2:4] == "ls":
-                index = "R"
-                for i in wd:
-                    index += "/" + i
-                while True:
-                    line = file.readline().rstrip()
-                    if not line:
-                        break
-                    elif line[0] == "$":
-                        break
-                    elif line[0] == "d":
-                        dirname = index + "/" + line[4:]
-                        fs[dirname] = 0
-                    else:
-                        filesize = int(line.split()[0])
-                        h = "R"
-                        fs[h] += filesize
-                        for i in wd:
-                            h += "/" + i
-                            fs[h] += filesize
-
-            if line[2:4] == "cd":
-                param = line[5:]
-                if param == "/":
-                    wd = []
-                elif param == "..":
-                    wd.pop()
+        if line[2:4] == "ls":
+            index = "R"
+            for i in wd:
+                index += "/" + i
+            while True:
+                line = file.readline().rstrip()
+                if not line:
+                    break
+                elif line[0] == "$":
+                    break
+                elif line[0] == "d":
+                    dirname = index + "/" + line[4:]
+                    fs[dirname] = 0
                 else:
-                    wd.append(param)
-                print("cd", param, wd)
+                    filesize = int(line.split()[0])
+                    h = "R"
+                    fs[h] += filesize
+                    for i in wd:
+                        h += "/" + i
+                        fs[h] += filesize
+
+        if line[2:4] == "cd":
+            param = line[5:]
+            if param == "/":
+                wd = []
+            elif param == "..":
+                wd.pop()
+            else:
+                wd.append(param)
 
 need_to_delete = required - (fs_size - fs["R"])
 print(need_to_delete)
