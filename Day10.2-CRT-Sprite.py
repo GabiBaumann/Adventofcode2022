@@ -143,14 +143,14 @@ def paint_sprite():
         sprite = "#"
     else:
         sprite = "."
-    crt[y].append(sprite)
+    crt[y] += sprite
 
 X = 1
 d = 0
 cycle = 0
 crtwidth = 40
 crtheight = 6
-crt = [ [], [], [], [], [], [] ]
+crt = [ '', '', '', '', '', '' ]
 
 with open('Day10-Input', 'r') as file:
     for line in file.readlines():
@@ -167,9 +167,6 @@ with open('Day10-Input', 'r') as file:
 
 #print(crt)
 for y in range(crtheight):
-    out = ""
-    for x in range(crtwidth):
-        out += crt[y][x]
-    print(out)
+    print(crt[y])
         
 # FCJAPJRE
