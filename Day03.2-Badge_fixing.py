@@ -35,7 +35,7 @@ Find the item type that corresponds to the badges of each three-Elf group. What 
 for each three lines of input, find element that all three carry, sum up the values of these.
 """
 
-def examine_triplets(triplet):
+def examine_triplet(triplet):
     for char in triplet[0]:
         if char in triplet[1] and char in triplet[2]:
             if char == char.lower():
@@ -45,19 +45,14 @@ def examine_triplets(triplet):
             break
     return(v)
     
-i = 0
 value = 0
-triplet = [ "some", "init", "dummies" ]
+triplet = []
 
 with open('Day03-Input', 'r') as file:
     for line in file:
-        if i < 3:
-            triplet[i] = line.rstrip()
-            i += 1
-        else:
-            value += examine_triplets(triplet)
-            triplet[0] = line.rstrip()
-            i = 1
+        triplet.append(line.rstrip())
+        if len(triplet) == 3:
+            value += examine_triplet(triplet)
+            triplet = []
 
-value += examine_triplets(triplet)
 print(value)
