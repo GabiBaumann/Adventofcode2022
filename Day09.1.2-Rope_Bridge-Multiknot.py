@@ -712,7 +712,7 @@ posy = []
 for i in range(knots):
     posx.append(0)
     posy.append(0)
-visited = [(0,0)]
+visited = []
 
 with open('Day09-Input', 'r') as file:
     for line in file.readlines():
