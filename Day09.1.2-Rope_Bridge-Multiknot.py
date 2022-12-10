@@ -705,7 +705,7 @@ posy = []
 for i in range(knots):
     posx.append(0)
     posy.append(0)
-visited = [ (0,0) ]
+visited = [(0,0)]
 
 with open('Day09-Input', 'r') as file:
     for line in file.readlines():
@@ -721,44 +721,31 @@ with open('Day09-Input', 'r') as file:
                 posy[0] -= 1
             else:
                 posx[0] -= 1
-            ldir = [ direction ]
             for i in range(1, knots):
-                if "U" in ldir and posy[i] < posy[i-1] -1:
-                    ldir = [ 'U' ]
+                if posy[i] < posy[i-1] - 1:
                     posy[i] += 1
                     if posx[i] < posx[i-1]:
                         posx[i] += 1
-                        ldir.append("R")
                     elif posx[i] > posx[i-1]:
                         posx[i] -= 1
-                        ldir.append("L")
-                elif "R" in ldir and posx[i] < posx[i-1] - 1:
-                    ldir = [ "R" ]
+                elif posx[i] < posx[i-1] - 1:
                     posx[i] += 1
                     if posy[i] < posy[i-1]:
                         posy[i] += 1
-                        ldir.append("U")
                     elif posy[i] > posy[i-1]:
                         posy[i] -= 1
-                        ldir.append("D")
-                elif "D" in ldir and posy[i] > posy[i-1] + 1:
-                    ldir = [ "D" ]
+                elif posy[i] > posy[i-1] + 1:
                     posy[i] -= 1
                     if posx[i] < posx[i-1]:
                         posx[i] += 1
-                        ldir.append("R")
                     elif posx[i] > posx[i-1]:
                         posx[i] -= 1
-                        ldir.append("L")
-                elif "L" in ldir and posx[i] > posx[i-1] + 1:
-                    ldir = [ "L" ]
+                elif posx[i] > posx[i-1] + 1:
                     posx[i] -= 1
                     if posy[i] < posy[i-1]:
                         posy[i] += 1
-                        ldir.append("U")
                     elif posy[i] > posy[i-1]:
                         posy[i] -= 1
-                        ldir.append("D")
             tt = (posx[i],posy[i])
             if tt not in visited:
                 visited.append(tt)
