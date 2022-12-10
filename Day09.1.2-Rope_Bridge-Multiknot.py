@@ -700,6 +700,13 @@ Calling the function with different calling orders allows for using same functio
 knots = 2  # 9.1
 knots = 10  # 9.2
 
+def tow_orthogonal(cur,old):
+    if cur < old:
+        cur += 1
+    elif cur > old:
+        cur -= 1
+    return cur
+
 posx = []
 posy = []
 for i in range(knots):
@@ -724,33 +731,23 @@ with open('Day09-Input', 'r') as file:
             for i in range(1, knots):
                 if posy[i] < posy[i-1] - 1:
                     posy[i] += 1
-                    if posx[i] < posx[i-1]:
-                        posx[i] += 1
-                    elif posx[i] > posx[i-1]:
-                        posx[i] -= 1
+                    posx[i] = tow_orthogonal(posx[i], posx[i-1])
                 elif posx[i] < posx[i-1] - 1:
                     posx[i] += 1
-                    if posy[i] < posy[i-1]:
-                        posy[i] += 1
-                    elif posy[i] > posy[i-1]:
-                        posy[i] -= 1
+                    posy[i] = tow_orthogonal(posy[i], posy[i-1])
                 elif posy[i] > posy[i-1] + 1:
                     posy[i] -= 1
-                    if posx[i] < posx[i-1]:
-                        posx[i] += 1
-                    elif posx[i] > posx[i-1]:
-                        posx[i] -= 1
+                    posx[i] = tow_orthogonal(posx[i], posx[i-1])
                 elif posx[i] > posx[i-1] + 1:
                     posx[i] -= 1
-                    if posy[i] < posy[i-1]:
-                        posy[i] += 1
-                    elif posy[i] > posy[i-1]:
-                        posy[i] -= 1
-            tt = (posx[i],posy[i])
+                    posy[i] = tow_orthogonal(posy[i], posy[i-1])
+                else:
+                    break
+            tt = (posx[knots-1],posy[knots-1])
             if tt not in visited:
                 visited.append(tt)
 
-print(visited)
+#print(visited)
 print(len(visited))
 
 # 2367 for 9.2
