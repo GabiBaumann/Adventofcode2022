@@ -60,7 +60,7 @@ with open('Day01-Input', 'r') as file:
                 biggest = size
             size = 0
         else:
-            size += int(line.strip())
+            size += int(line)
     if size > biggest:
         biggest = size
 print(biggest)
