@@ -51,11 +51,12 @@ wood = []
 max_scenery = 0
 
 with open('Day08-Input', 'r') as file:
-    for line in file.readlines():
+    for line in file:
         row =[]
         for char in line.rstrip():
             row.append(char)
         wood.append(row)
+
 xmax = len(row) - 1
 ymax = len(wood) - 1
 
