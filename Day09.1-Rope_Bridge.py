@@ -262,7 +262,7 @@ tailposy = 0
 visited = [ (0,0) ]
 
 with open('Day09-Input', 'r') as file:
-    for line in file.readlines():
+    for line in file:
         direction, steps = line.split()
         steps = int(steps)
         if direction == "U":
