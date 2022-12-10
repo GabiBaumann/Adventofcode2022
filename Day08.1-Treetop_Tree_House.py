@@ -43,11 +43,12 @@ for each but 0, max(list), check if max of (:tree_pos) and (tree_pos+1:) < tree_
 wood = []
 
 with open('Day08-Input', 'r') as file:
-    for line in file.readlines():
+    for line in file:
         row = []
         for char in line.rstrip():
             row.append(char)
         wood.append(row)
+
 xmax = len(row) - 1
 ymax = len(wood) - 1
 visible = 2 * xmax + 2 * ymax # visible borders
@@ -63,7 +64,7 @@ for y in range(1, ymax):
             continue
         col = []
         for i in range(y):
-            col.append(wood[i][x]) # can I just do plenty ifs?
+            col.append(wood[i][x])
         if th > max(col):
             visible += 1
             continue
@@ -72,5 +73,6 @@ for y in range(1, ymax):
             col.append(wood[i][x])
         if th > max(col):
             visible += 1
+
 print(visible, "trees are visible")
 
