@@ -22,7 +22,7 @@ count = 0
 
 with open('Day04-Input', 'r') as file:
     for line in file:
-        r1, r2 = line.rstrip().split(',')
+        r1, r2 = line.split(',')
         rf1, rt1 = r1.split('-')
         rf2, rt2 = r2.split('-')
 
