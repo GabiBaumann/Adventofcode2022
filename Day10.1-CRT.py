@@ -211,8 +211,7 @@ readat = 20
 signal_strength = 0
 
 with open('Day10-Input', 'r') as file:
-    for line in file.readlines():
-        print(line.rstrip())
+    for line in file:
         cycle += 1
         d = 0
         if line[0] == "a":
