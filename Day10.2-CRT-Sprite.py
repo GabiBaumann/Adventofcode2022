@@ -146,24 +146,21 @@ def paint_sprite():
     crt[y] += sprite
 
 X = 1
-d = 0
 cycle = 0
 crtwidth = 40
 crtheight = 6
-crt = [ '', '', '', '', '', '' ]
+crt = ['','','','','','']
 
 with open('Day10-Input', 'r') as file:
-    for line in file.readlines():
-        print(line.rstrip())
-        #print(crt)
-        X += d
+    for line in file:
         paint_sprite()
         cycle +=1
         d = 0
         if line[0] == "a":
-            d = int(line.split()[1])
             paint_sprite()
             cycle += 1
+            d = int(line.split()[1])
+        X += d
 
 #print(crt)
 for y in range(crtheight):
