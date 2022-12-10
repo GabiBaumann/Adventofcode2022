@@ -28,7 +28,7 @@ with open('Day01-Input', 'r') as file:
             elfs_backpacks.append(size)
             size = 0
         else:
-            size += int(line.strip())
+            size += int(line)
     elfs_backpacks.append(size)
 
 elfs_backpacks = sorted(elfs_backpacks)[-3:]
