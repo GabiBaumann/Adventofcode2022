@@ -689,12 +689,8 @@ Simulate your complete series of motions on a larger rope with ten knots. How ma
 """
 
 """
-So, use 9.1 code, but as long as a knot moves, check what next one does. if knot[knots-1] moves, append position to visited.
-That should end up with a general solution for both puzzles.
-
-Todo:
-Dedup quite some code when doing the moves bit. They differ by x vs. y handling.
-Calling the function with different calling orders allows for using same function. Direction (l vs. r, u vs. d) by a factor (1, -1)
+So, use 9.1 code, but as long as a knot distance of 2 comes up, check what next one does. We can't just set orthogonal to previous knot's value, as a diagonal pull can be 2+2 in distance. If knot[knots-1] moves, append position to visited.
+This is a general solution for both puzzles.
 """
 
 knots = 2  # 9.1
