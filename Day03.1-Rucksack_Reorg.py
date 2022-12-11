@@ -46,7 +46,7 @@ value = 0
 
 with open('Day03-Input', 'r') as file:
     for line in file:
-        half = int(len(line.rstrip()) / 2)
+        half = len(line.rstrip()) // 2
         compartment_two = line[half:]
         for char in line[:half]:
             if char in compartment_two:
