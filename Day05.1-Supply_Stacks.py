@@ -86,7 +86,7 @@ with open('Day05-Input', 'r') as file:
                 for i in range(no_cols):
                     init_stacks[i].append(line[i*4+1])
             else:
-                no_cols = int(len(line) / 4)
+                no_cols = len(line) // 4
                 for i in range(no_cols):
                     init_stacks.append([line[i*4+1]])
                     stacks.append([])
