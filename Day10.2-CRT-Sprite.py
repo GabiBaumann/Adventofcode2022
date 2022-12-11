@@ -138,7 +138,7 @@ Run until CRT screen is filled up?
 
 def paint_sprite():
     x = cycle % crtwidth 
-    y = int(cycle / crtwidth)
+    y = cycle // crtwidth
     if X-1 <= x <= X+1:
         sprite = "#"
     else:
