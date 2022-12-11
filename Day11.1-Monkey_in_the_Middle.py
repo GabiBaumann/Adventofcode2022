@@ -255,9 +255,9 @@ for rd in range(rounds):
             else:
                 o = int(md["param"])
             if md["op"] == "+":
-                worry = int((item + o) / 3)
+                worry = (item + o) // 3
             else:
-                worry = int(item * o / 3)
+                worry = item * o // 3
             if worry % md["div"] == 0:
                 monkeys[md["true"]]["items"].append(worry)
             else:
