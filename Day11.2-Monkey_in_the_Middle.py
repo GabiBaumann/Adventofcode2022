@@ -309,7 +309,8 @@ Worry levels are no longer divided by three after each item is inspected; you'll
 """
 
 """
-Manage worry levels by dividing by the product of all divisors (which are all primes, so don't worry about smallest common divisor.
+Manage worry levels by dividing worry level by the product of all divisors (which are all primes, so don't worry about smallest common divisor.
+Just check after a multiply, additions don't grow that fast.
 """
 
 rounds = 10000
