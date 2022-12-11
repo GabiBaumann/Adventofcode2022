@@ -314,10 +314,10 @@ Just check after a multiply, additions don't grow that fast.
 """
 
 rounds = 20     # 11.1
-#rounds = 10000  # 11.2
+rounds = 10000  # 11.2
 
 divby = 3       # 11.1
-#divby = 1       # 11.2
+divby = 1       # 11.2
 
 alldivs = 1
 monkeys = []
@@ -353,9 +353,9 @@ for rd in range(rounds):
             else:
                 o = int(md["param"])
             if md["op"] == "+":
-                worry = int((item + o) / divby)
+                worry = (item + o) // divby
             else:
-                worry = int((item * o) / divby) % alldivs
+                worry = ((item * o) // divby) % alldivs
             if worry % md["div"] == 0:
                 monkeys[md["true"]]["items"].append(worry)
             else:
