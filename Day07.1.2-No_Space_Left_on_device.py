@@ -135,9 +135,7 @@ with open('Day07-Input', 'r') as file:
                 index += "/" + i
             while True:
                 line = file.readline().rstrip()
-                if not line:
-                    break
-                elif line[0] == "$":
+                if not line or line[0] == "$":
                     break
                 elif line[0] == "d":
                     dirname = index + "/" + line[4:]
