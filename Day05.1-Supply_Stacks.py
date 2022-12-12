@@ -78,11 +78,10 @@ with open('Day05-Input', 'r') as file:
     file.readline()
     
     # make the working stacks
-    no_lines = len(cargo) - 1
     no_cols = len(cargo[0]) // 4
     for i in range(no_cols):
         stacks.append([])
-    for i in range(no_lines, -1, -1):
+    for i in range(len(cargo)-1, -1, -1):
         for j in range(no_cols):
             fill_in = cargo[i][j*4+1]
             if fill_in != " ":
