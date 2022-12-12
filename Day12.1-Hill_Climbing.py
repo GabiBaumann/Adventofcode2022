@@ -40,7 +40,7 @@ Output minimum steps taken.
 
 Record the ordinal values (shifted - 96) in the first place. Start with '`' (96) as character before 'a', end with '{' (123) as character after 'z'. At height 27: we've found one way to go.
 
-This solution needs a list of coordinates visited already to not run in loops. This needs to be local to the recursion branch.
+This solution needs an array to keep track of how many steps it took to get to this position. If it gets there faster, set value to current number of steps.
 """
 
 from sys import setrecursionlimit
