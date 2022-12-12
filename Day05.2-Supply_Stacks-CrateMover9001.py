@@ -50,10 +50,8 @@ In this example, the CrateMover 9001 has put the crates in a totally different o
 
 Before the rearrangement process finishes, update your simulation so that the Elves know where they should stand to be ready to unload the final supplies. After the rearrangement procedure completes, what crate ends up on top of each stack?"""
 
-initialised = False
-init_stacks = []
+init_lines = []
 stacks = []
-lines = 0
 out = ""
 
 with open('Day05-Input', 'r') as file:
@@ -67,24 +65,20 @@ with open('Day05-Input', 'r') as file:
             while move:
                 stacks[int(target)-1].append(move.pop())
         elif line[0] == "[":
-            # chop up line to stack_pre lists
-            if initialised:
-                lines += 1
-                for i in range(no_cols):
-                    init_stacks[i].append(line[i*4+1])
-            else:
-                no_cols = len(line) // 4
-                for i in range(no_cols):
-                    init_stacks.append([line[i*4+1]])
-                    stacks.append([])
-                initialised = True
+            # just drop these for now.
+            init_lines.append(line)
         elif line[0] == " ":
             # make the working stacks
+            no_cols = len(init_lines[0]) // 4
+            no_lines = len(init_lines) - 1
             for i in range(no_cols):
-                while init_stacks[i]:
-                    fill_in = init_stacks[i].pop()
+                stacks.append([])
+            for i in range(no_lines, -1, -1):
+                for j in range(no_cols):
+                    fill_in = init_lines[i][j*4+1]
                     if fill_in != " ":
-                        stacks[i].append(fill_in)
+                        stacks[j].append(fill_in)
+
 
 print(stacks)
 for i in range(no_cols):
