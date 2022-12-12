@@ -143,8 +143,8 @@ with open('Day07-Input', 'r') as file:
             fs[dirname] = 0
         else:
             filesize = int(line.split()[0])
-            h = index
             fs["R"] += filesize
+            h = index
             while h != "R":
                 fs[h] += filesize
                 h = h.rsplit("/", 1)[0]
