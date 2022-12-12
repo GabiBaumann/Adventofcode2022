@@ -50,35 +50,38 @@ In this example, the CrateMover 9001 has put the crates in a totally different o
 
 Before the rearrangement process finishes, update your simulation so that the Elves know where they should stand to be ready to unload the final supplies. After the rearrangement procedure completes, what crate ends up on top of each stack?"""
 
-init_lines = []
+cargo = []
 stacks = []
+move = []
 out = ""
 
 with open('Day05-Input', 'r') as file:
-    for line in file:
-        if line[0] == "m":
-            # do the moves
-            move = []
-            dummy0, count, dummy1, source, dummy2, target = line.split()
-            for i in range(int(count)):
-                move.append(stacks[int(source)-1].pop())
-            while move:
-                stacks[int(target)-1].append(move.pop())
-        elif line[0] == "[":
-            # just drop these for now.
-            init_lines.append(line)
-        elif line[0] == " ":
-            # make the working stacks
-            no_cols = len(init_lines[0]) // 4
-            no_lines = len(init_lines) - 1
-            for i in range(no_cols):
-                stacks.append([])
-            for i in range(no_lines, -1, -1):
-                for j in range(no_cols):
-                    fill_in = init_lines[i][j*4+1]
-                    if fill_in != " ":
-                        stacks[j].append(fill_in)
 
+    # read container stack
+    for line in file:
+        if line[0] == " ":
+            break
+        cargo.append(line)
+    file.readline()
+
+    # make the working stacks
+    no_lines = len(cargo) - 1
+    no_cols = len(cargo[0]) // 4
+    for i in range(no_cols):
+        stacks.append([])
+    for i in range(no_lines, -1, -1):
+        for j in range(no_cols):
+            fill_in = cargo[i][j*4+1]
+            if fill_in != " ":
+                stacks[j].append(fill_in)
+
+    # move containers
+    for line in file:
+        d0, count, d1, source, d2, target = line.split()
+        for i in range(int(count)):
+            move.append(stacks[int(source)-1].pop())
+        while move:
+            stacks[int(target)-1].append(move.pop())
 
 print(stacks)
 for i in range(no_cols):
