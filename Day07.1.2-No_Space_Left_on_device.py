@@ -125,37 +125,29 @@ fs = { 'R': 0 }
 out = 0
 
 with open('Day07-Input', 'r') as file:
-    while True:
-        line = file.readline().rstrip()
-        if not line:
+    for line in file:
+        if line == "\n":
             break
-        if line[2:4] == "ls":
-            index = "R"
-            for i in wd:
-                index += "/" + i
-            while True:
-                line = file.readline().rstrip()
-                if not line or line[0] == "$":
-                    break
-                elif line[0] == "d":
-                    dirname = index + "/" + line[4:]
-                    fs[dirname] = 0
-                else:
-                    filesize = int(line.split()[0])
-                    h = "R"
-                    fs[h] += filesize
-                    for i in wd:
-                        h += "/" + i
-                        fs[h] += filesize
-
-        if line[2:4] == "cd":
-            param = line[5:]
+        elif line[2:4] == "ls":
+            pass
+        elif line[2:4] == "cd":
+            param = line[5:-1]
             if param == "/":
-                wd = []
+                index = "R"
             elif param == "..":
-                wd.pop()
+                index = index.rsplit("/", 1)[0]
             else:
-                wd.append(param)
+                index += "/" + param
+        elif line[0] == "d":
+            dirname = index + "/" + line[4:-1]
+            fs[dirname] = 0
+        else:
+            filesize = int(line.split()[0])
+            h = index
+            fs["R"] += filesize
+            while h != "R":
+                fs[h] += filesize
+                h = h.rsplit("/", 1)[0]
 
 need_to_delete = required - (fs_size - fs["R"])
 for i in fs:
