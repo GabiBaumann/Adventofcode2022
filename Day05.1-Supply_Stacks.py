@@ -64,32 +64,36 @@ If numbers appear, stop that. Rearrange lines to stack colums.
 With the moves, pop move times from the end of the source stack, append to destination stack.
 """
 
-init_lines = []
+cargo = []
 stacks = []
 out = ""
 
 with open('Day05-Input', 'r') as file:
+
+    # read container stack
     for line in file:
-        if line[0] == "m":
-            # do the moves
-            dummy0, count, dummy1, source, dummy2, target = line.split()
-            for i in range(int(count)):
-                move = stacks[int(source)-1].pop()
-                stacks[int(target)-1].append(move)
-        elif line[0] == "[":
-            # just drop these for now.
-            init_lines.append(line)
-        elif line[0] == " ":
-            # make the working stacks
-            no_cols = len(init_lines[0]) // 4
-            no_lines = len(init_lines) - 1
-            for i in range(no_cols):
-                stacks.append([])
-            for i in range(no_lines, -1, -1):
-                for j in range(no_cols):
-                    fill_in = init_lines[i][j*4+1]
-                    if fill_in != " ":
-                        stacks[j].append(fill_in)
+        if line[0] == " ":
+            break
+        cargo.append(line)
+    file.readline()
+    
+    # make the working stacks
+    no_lines = len(cargo) - 1
+    no_cols = len(cargo[0]) // 4
+    for i in range(no_cols):
+        stacks.append([])
+    for i in range(no_lines, -1, -1):
+        for j in range(no_cols):
+            fill_in = cargo[i][j*4+1]
+            if fill_in != " ":
+                stacks[j].append(fill_in)
+    
+    # move containers
+    for line in file:
+        d0, count, d1, source, d2, target = line.split()
+        for i in range(int(count)):
+            move = stacks[int(source)-1].pop()
+            stacks[int(target)-1].append(move)
 
 print(stacks)
 for i in range(no_cols):
