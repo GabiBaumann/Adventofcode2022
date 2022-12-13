@@ -165,7 +165,6 @@ with open('Day13-Input', 'r') as file:
                     else:
                         # A number. make singleton list. And continue.
                         i = 1
-                        #print("me here.", lines[1][posr:])
                         while lines[1][posr+i] not in ',]':
                             i += 1
                         lines[1] = "[" + lines[1][posr:posr+i] + "]" + lines[1][posr+i:]
