@@ -170,113 +170,92 @@ optionally set "unfinished" bool -- the compare is expensive, so...
 Compare second to third, ...
 Until end of list. Next run -1, as last element is biggest of all.
 Repeat until end counter is 0. Or "unfinished" is never set.
+
+Worth recoding:
+go backwards, sorting start first. when upping cutoff, look if that line is [[6]], break. 
 """
+
+def needtosort(l,h):
+    """
+    Do the comparison dance.
+    """
+    
+    posl, posh = 0, 0
+    order = ''
+
+    while True:
+        if l[posl] == "[":
+            if h[posh] == "]":
+                return(True)
+            elif h[posh].isdigit():
+                i = 1
+                while h[posh+i].isdigit():
+                    i += 1
+                h = "[" + h[posh:posh+i] + "]" + h[posh+i:]
+                posh = 0
+        elif l[posl] == "]":
+            if h[posh] != "]":
+                return(False)
+        elif l[posl] == ",":
+            if h[posh] == "]":
+                return(True)
+        else:
+            if h[posh] == "[":
+                i = 1
+                while l[posl+i].isdigit():
+                    i += 1
+                l = "[" + l[posl:posl+i] + "]" + l[posl+i:]
+                posl = 0
+            elif h[posh] == "]":
+                return(True)
+            else:
+                i = 1
+                while l[posl+i].isdigit():
+                    i += 1
+                cl = int(l[posl:posl+i])
+                posl += i - 1
+                i = 1
+                while h[posh+i].isdigit():
+                    i += 1
+                cr = int(h[posh:posh+i])
+                posh += i - 1
+                if cl < cr:
+                    return(False)
+                elif cl > cr:
+                    return(True)
+        posl += 1
+        posh += 1
+
 
 lines = [ '[[2]]', '[[6]]' ]
 index = 0 
-switch = True
+out = 0
 
 with open('Day13-Input', 'r') as file:
     for line in file:
-        #print(line)
         if line == "\n":
             continue
-        lines.append(line[:-1])
+        lines.append(line.rstrip())
 
 stop = len(lines)
 
-while stop > 0 and switch:
+while stop > 0:
     index = 0
     stop -= 1
-    switch = False
     while stop > index:
-        left = lines[index]
-        right = lines[index+1]
-        posl, posr = 0, 0
-        order = ''
-        while not order:
-            if left[posl] == "]":
-                if right[posr] == "]":
-                    dummy = 1
-                else:
-                    # print("Finished. Right order. ],")
-                    order = "right"
-            elif left[posl] == ",":
-                if right[posr] == "]":
-                    # print("Finished. Wrong order. ,]")
-                    order = "wrong"
-                    switch = True
-                else:
-                    #print("Same. continue. ,,")
-                    dummy = 1
-            elif left[posl] == "[":
-                if right[posr] == "[":
-                    #print("Same. continue. [[")
-                    dummy = 1
-                elif right[posr] == "]":
-                    # print("Finished. Wrong order. Right list is shorter.")
-                    order = "wrong"
-                    switch = True
-                else:
-                    # A number. make singleton list. And continue.
-                    i = 1
-                    #print("me here.", right[posr:])
-                    while right[posr+i] not in ',]':
-                        i += 1
-                    right = "[" + right[posr:posr+i] + "]" + right[posr+i:]
-                    posr = 0
-                    #print("Appended right.", right[posr:])
-                    #print("Made a list on right. [<int>")
-            else: # A number on the left
-                if right[posr] == "[":
-                    # Make singleton list on left. Continue.
-                    i = 1
-                    while left[posl+i] not in ',]':
-                        i += 1
-                    left = "[" + left[posl:posl+i] + "]" + left[posl+i:]
-                    posl = 0
-                    #print("Made a list on left. <int>[")
-                elif right[posr] == "]":
-                    # print("Finished. Wrong order. <int>]")
-                    order = "wrong"
-                    switch = True
-                else: # both are numbers
-                    i = 1
-                    while left[posl+i] not in ',]':
-                        i += 1
-                    cl = int(left[posl:posl+i])
-                    posl += i - 1
-                    i = 1
-                    while right[posr+i] not in ',]':
-                        i += 1
-                    cr = int(right[posr:posr+i])
-                    posr += i - 1
-                    if cl < cr:
-                        # print("Finished. Right order.", cl, cr)
-                        order = "right"
-                    elif cl > cr:
-                        # print("Finished. Wrong order.", cl, cr)
-                        order = "wrong"
-                        switch = True
-                    else: # equal
-                        #print("Same. continue.", cl, cr)
-                        dummy = 1
-            posl += 1
-            posr += 1
-        if order == "wrong":
+        if needtosort(lines[index], lines[index+1]):
             h = lines[index]
             lines[index] = lines[index+1]
             lines[index+1] = h
         index += 1 
 
 
-print(lines)
 for i in range(len(lines)):
     if lines[i] == '[[2]]':
         out = i + 1
     elif lines[i] == '[[6]]':
         out *= (i + 1)
 
-print()
 print(out)
 
+# 21276
