@@ -226,9 +226,8 @@ lines = [ '[[2]]', '[[6]]' ]
 
 with open('Day13-Input', 'r') as file:
     for line in file:
-        if line == "\n":
-            continue
-        lines.append(line.rstrip())
+        if line != "\n":
+            lines.append(line.rstrip())
 
 stop = 0
 lastline = len(lines) - 1
