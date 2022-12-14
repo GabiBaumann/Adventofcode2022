@@ -223,8 +223,6 @@ def needtosort(l,h):
         posh += 1
 
 lines = [ '[[2]]', '[[6]]' ]
-index = 0 
-out = 0
 
 with open('Day13-Input', 'r') as file:
     for line in file:
@@ -244,12 +242,11 @@ while stop < lastline:
             lines[index-1] = h
         index -= 1 
     stop += 1
-
-for i in range(len(lines)):
-    if lines[i] == '[[2]]':
-        out = i + 1
-    elif lines[i] == '[[6]]':
-        out *= (i + 1)
+    if lines[stop-1] == '[[2]]':
+        out = stop
+    elif lines[stop-1] == '[[6]]':
+        out *= stop
+        break
 
 print(out)
 
