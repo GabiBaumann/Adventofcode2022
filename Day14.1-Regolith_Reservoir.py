@@ -144,20 +144,16 @@ def draw_path(x,y,px,py):
     if x == px:
         if y < py:
             for i in range(y,py+1):
-                print("Draw up", x,i)
                 grid[i][x] = True
         else:
             for i in range(py,y+1):
-                print("Draw down", x,i)
                 grid[i][x] = True
     else:
         if x < px:
             for i in range(x,px+1):
-                print("Draw left", i,y)
                 grid[y][i] = True
         else:
             for i in range(px,x+1):
-                print("Draw right", i,y)
                 grid[y][i] = True
 
 grid = []
@@ -166,22 +162,20 @@ sandy = 0
 
 for y in range(200):
     grid.append([])
-    for x in range(600):
+    for x in range(700):
         grid[y].append(False)
 
 with open('Day14-Input') as file:
     for line in file:
         start = True
         x, y = 0, 0
-        while "-" in line: # != '\n':
+        while "-" in line:
             coordinates, line = line.split(' ', 1)
-            print(coordinates, line)
             if coordinates == "->":
                 continue
             px = x
             py = y
             x, y = coordinates.split(',')
-            print(x,y)
             if start:
                 start = False
                 continue
@@ -189,18 +183,17 @@ with open('Day14-Input') as file:
         px = x
         py = y
         x,y = line.split(',')
-        print("Finally:", x, y)
         draw_path(int(x),int(y),int(px),int(py))
-
 
 flow_off = len(grid) - 1
 filled = False
 count = 0
-while not filled: # sand not flowing off-screen
+
+while not filled:
     count += 1
     x = sandx
     y = sandy
-    while True: # sand not settled
+    while True:
         y += 1
         if y == flow_off:
             filled = True
@@ -214,7 +207,6 @@ while not filled: # sand not flowing off-screen
             x += 1
             continue
         grid[y-1][x] = True
-        print(count, "Filled:", y-1, x)
         break
 
 print(count-1)
@@ -231,4 +223,3 @@ for y in range(20):
             st += "."
     print(st)
 """
-
