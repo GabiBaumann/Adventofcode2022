@@ -116,7 +116,6 @@ Determine which pairs of packets are already in the right order. What is the sum
 
 """
 Lines start with [, end with ] (and are a single list, methinks).
-throw these away from the start.
 
 Left is first line. shall be smaller. or shorter.
 
@@ -127,96 +126,74 @@ If both are lists -- do that list. If contents match till end of list, shorter l
 If one is integer and other list, expand integer to single-Item list. Compare lists from there.
 """
 
+def needtosort(l,h):
+    """
+    Do the comparison dance.
+    Note: Equal characters are not explicitly handled but fall through.
+    """
+
+    posl, posh = 0, 0
+    order = ''
+
+    while True:
+        if l[posl] == "[":
+            if h[posh] == "]":
+                return(True)
+            elif h[posh].isdigit():
+                i = 1
+                while h[posh+i].isdigit():
+                    i += 1
+                h = "[" + h[posh:posh+i] + "]" + h[posh+i:]
+                posh = 0
+        elif l[posl] == "]":
+            if h[posh] != "]":
+                return(False)
+        elif l[posl] == ",":
+            if h[posh] == "]":
+                return(True)
+        else:
+            if h[posh] == "[":
+                i = 1
+                while l[posl+i].isdigit():
+                    i += 1
+                l = "[" + l[posl:posl+i] + "]" + l[posl+i:]
+                posl = 0
+            elif h[posh] == "]":
+                return(True)
+            else:
+                i = 1
+                while l[posl+i].isdigit():
+                    i += 1
+                cl = int(l[posl:posl+i])
+                posl += i - 1
+                i = 1
+                while h[posh+i].isdigit():
+                    i += 1
+                cr = int(h[posh:posh+i])
+                posh += i - 1
+                if cl < cr:
+                    return(False)
+                elif cl > cr:
+                    return(True)
+        posl += 1
+        posh += 1
+
+
 lines = []
 index = 0 
 out = 0
 
 with open('Day13-Input', 'r') as file:
     for line in file:
-        print(line)
         if line == "\n":
             continue
         lines.append(line[:-1])
         if len(lines) == 2:
             index += 1
-            posl, posr = 0, 0
-            order = ''
-            while not order:
-                if lines[0][posl] == "]":
-                    if lines[1][posr] == "]":
-                        dummy = 1
-                    else:
-                        print("Finished. Right order. ],")
-                        order = "right"
-                elif lines[0][posl] == ",":
-                    if lines[1][posr] == "]":
-                        print("Finished. Wrong order. ,]")
-                        order = "wrong"
-                    else:
-                        #print("Same. continue. ,,")
-                        dummy = 1
-                elif lines[0][posl] == "[":
-                    if lines[1][posr] == "[":
-                        #print("Same. continue. [[")
-                        dummy = 1
-                    elif lines[1][posr] == "]":
-                        print("Finished. Wrong order. Right list is shorter.")
-                        order = "wrong"
-                    else:
-                        # A number. make singleton list. And continue.
-                        i = 1
-                        while lines[1][posr+i] not in ',]':
-                            i += 1
-                        lines[1] = "[" + lines[1][posr:posr+i] + "]" + lines[1][posr+i:]
-                        posr = 0
-                        #print("Appended right.", lines[1][posr:])
-                        #print("Made a list on right. [<int>")
-                else: # A number on the left
-                    if lines[1][posr] == "[":
-                        # Make singleton list on left. Continue.
-                        i = 1
-                        while lines[0][posl+i] not in ',]':
-                            i += 1
-                        lines[0] = "[" + lines[0][posl:posl+i] + "]" + lines[0][posl+i:]
-                        posl = 0
-                        #print("Made a list on left. <int>[")
-                    elif lines[1][posr] == "]":
-                        print("Finished. Wrong order. <int>]")
-                        order = "wrong"
-                    else: # both are numbers
-                        i = 1
-                        while lines[0][posl+i] not in ',]':
-                            i += 1
-                        cl = int(lines[0][posl:posl+i])
-                        posl += i - 1
-                        i = 1
-                        while lines[1][posr+i] not in ',]':
-                            i += 1
-                        cr = int(lines[1][posr:posr+i])
-                        posr += i - 1
-                        if cl < cr:
-                            print("Finished. Right order.", cl, cr)
-                            order = "right"
-                        elif cl > cr:
-                            print("Finished. Wrong order.", cl, cr)
-                            order = "wrong"
-                        else: # equal
-                            #print("Same. continue.", cl, cr)
-                            dummy = 1
-                posl += 1
-                posr += 1
-            lines = []
-            if not order:
-                print("Ran out of chars here.")
-                order = "right"
-            if order == "right":
+            if not needtosort(lines[0], lines[1]):
                 out += index
-                print("Now:", out, index)
+            lines = []
 
-print()
 print(out)
 
-# 6511 is too much
-# 5434 is still too much
 # 5340
-# Debug until index 5
