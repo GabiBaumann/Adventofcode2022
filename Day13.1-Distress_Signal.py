@@ -131,10 +131,8 @@ def needtosort(l,h):
     Do the comparison dance.
     Note: Equal characters are not explicitly handled but fall through.
     """
-
     posl, posh = 0, 0
     order = ''
-
     while True:
         if l[posl] == "[":
             if h[posh] == "]":
@@ -177,7 +175,6 @@ def needtosort(l,h):
                     return(True)
         posl += 1
         posh += 1
-
 
 lines = []
 index = 0 
