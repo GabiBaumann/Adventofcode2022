@@ -176,13 +176,9 @@ go backwards, sorting start first. when upping cutoff, look if that line is [[6]
 """
 
 def needtosort(l,h):
-    """
-    Do the comparison dance.
-    """
-    
+    "Do the comparison dance."
     posl, posh = 0, 0
     order = ''
-
     while True:
         if l[posl] == "[":
             if h[posh] == "]":
@@ -226,7 +222,6 @@ def needtosort(l,h):
         posl += 1
         posh += 1
 
-
 lines = [ '[[2]]', '[[6]]' ]
 index = 0 
 out = 0
@@ -237,18 +232,18 @@ with open('Day13-Input', 'r') as file:
             continue
         lines.append(line.rstrip())
 
-stop = len(lines)
+stop = 0
+lastline = len(lines) - 1
 
-while stop > 0:
-    index = 0
-    stop -= 1
-    while stop > index:
-        if needtosort(lines[index], lines[index+1]):
+while stop < lastline:
+    index = lastline
+    while stop < index:
+        if needtosort(lines[index-1], lines[index]):
             h = lines[index]
-            lines[index] = lines[index+1]
-            lines[index+1] = h
-        index += 1 
-
+            lines[index] = lines[index-1]
+            lines[index-1] = h
+        index -= 1 
+    stop += 1
 
 for i in range(len(lines)):
     if lines[i] == '[[2]]':
