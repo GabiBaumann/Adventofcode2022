@@ -174,7 +174,10 @@ def find_path(nowpos, target, step, maxsteps, visited): #maxsteps: min of maxste
         return step
     if target in vd[nowpos]['paths']:
         return step+1
-    if step + 1 >= maxsteps:
+    #if step >= maxsteps:
+    #    print("Eww. In the bin.")
+    #    return step
+    if step + 1 == maxsteps:
         return step+1
     visited.append(nowpos)
     for path in vd[nowpos]['paths']:
@@ -200,7 +203,7 @@ def increaseflow(pos, tl, cf, sf, ov):
     #print('Now:', pos, tl, cf, sf, ov)
     if tl <= 2: 
         nsf = sf + (tl * cf)
-        print("Can't do more:", tl, nsf)
+        #print("Can't do more:", tl, nsf)
         return nsf
     if len(ov) == len(usablevalves):
         print('Now just wait', ov)
@@ -208,6 +211,7 @@ def increaseflow(pos, tl, cf, sf, ov):
 
     for valve in usablevalves:
         if valve in ov:
+            nsf = sf # now I start cargo-culting
             continue
         # get distaDebugnce to valve
         #print("Looking up", valve)
@@ -221,6 +225,9 @@ def increaseflow(pos, tl, cf, sf, ov):
         nov.append(valve) # do that in param
         if ntl > 0:
             nsf = increaseflow(valve, ntl, ncf, nsf, nov[:])
+        elif ntl < 0:
+            print("Eww. What am I doing here?", ntl, nsf, cf)
+            nsf = nsf - (cf * ntl * - 1)
         #print(mf, nsf)
         mf = max(mf, nsf)
     return nsf
