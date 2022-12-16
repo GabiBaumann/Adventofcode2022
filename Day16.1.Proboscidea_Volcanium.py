@@ -170,10 +170,12 @@ Organise input in a list of valve IDs being the name of dict with rate: int, pat
 """
 
 def find_path(nowpos, target, step, maxsteps, visited): #maxsteps: min of maxsteps, tl. Needs to be >0.
+    if target == nowpos:
+        return step
     if target in vd[nowpos]['paths']:
         return step+1
-    if step + 1 == maxsteps:
-        return maxsteps
+    if step + 1 >= maxsteps:
+        return step+1
     visited.append(nowpos)
     for path in vd[nowpos]['paths']:
         if path in visited:
@@ -196,18 +198,22 @@ def increaseflow(pos, tl, cf, sf, ov):
 
     global mf
     #print('Now:', pos, tl, cf, sf, ov)
+    if tl <= 2: 
+        nsf = sf + (tl * cf)
+        print("Can't do more:", tl, nsf)
+        return nsf
     if len(ov) == len(usablevalves):
-        #print('Now just wait', ov)
+        print('Now just wait', ov)
         return sf + tl * cf
 
     for valve in usablevalves:
         if valve in ov:
             continue
-        # get distance to valve
-        print("Looking up", valve)
+        # get distaDebugnce to valve
+        #print("Looking up", valve)
         step = 0
-        minsteps = tl
-        steps = find_path(pos, valve, step, minsteps, [])
+        maxsteps = tl - 1
+        steps = find_path(pos, valve, step, maxsteps, [])
         ntl = tl - (steps + 1)
         nsf = sf + (steps + 1) * cf
         ncf = cf + vd[valve]['rate']
@@ -215,8 +221,8 @@ def increaseflow(pos, tl, cf, sf, ov):
         nov.append(valve) # do that in param
         if ntl > 0:
             nsf = increaseflow(valve, ntl, ncf, nsf, nov[:])
+        #print(mf, nsf)
         mf = max(mf, nsf)
-    print("Returning increaseflow", mf)
     return nsf
 
 minutes = 30
@@ -224,7 +230,7 @@ vd = {}
 mf = 0
 usablevalves = []
 
-with open('Day16-Input--Debug', 'r') as file:
+with open('Day16-Input', 'r') as file:
     for line in file:
         valvepath = []
         valveid = line.split()[1]
@@ -237,5 +243,13 @@ with open('Day16-Input--Debug', 'r') as file:
         #print(vd[valveid]['rate'])
 
 startpos = list(vd.keys())[0]
-out = increaseflow(startpos, minutes, 0, 0, [])
-print(out)
+nsf = increaseflow(startpos, minutes, 0, 0, [])
+print(nsf)
+mf = max(mf, nsf)
+print(mf)
+
+# 1562 is too much.
+# 1484 is too much.
+# 1482 is wrong. (Eww, no more hint.)
+# 1464 is too little.
+# example out is 1651, which is right...
