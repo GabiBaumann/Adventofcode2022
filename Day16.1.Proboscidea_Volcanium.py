@@ -163,6 +163,20 @@ Keep track of rooms with valve already-open. This is the second condition when n
 Organise input in a list of valve IDs being the name of dict with rate: int, path: list/tuple.
 """
 
+def try_path(nowpos, target, step, minsteps, visited):
+    if target == nowpos:
+        return step
+    if step >= minsteps:
+        return step
+    visited.append(nowpos)
+    for path in vd[nowpos]['paths']:
+        if path in visited:
+            continue
+        steps = try_path(path, target, step+1, minsteps, visited[:])
+        minsteps = min(minsteps, steps)
+    return minsteps
+
+
 def increaseflow(pos, tl, cf, sf, ov):
     """
     Find max flow within 30 minutes
@@ -173,29 +187,55 @@ def increaseflow(pos, tl, cf, sf, ov):
     ov: list of open valves
     return sf when tl = 0
     """
+
     global mf, usefulvalves
     #print('Now:', pos, tl, cf, sf, ov)
-    if len(ov) == usefulvalves:
-        print('Now just wait', ov)
+    if len(ov) > usefulvalves:
+        #print('Now just wait', ov)
         return sf + tl * cf
-    elif tl == 0:
-        return sf
-    elif tl == 1:
-        return sf + cf
-    elif sf < maxflown[tl] - 2 * maxthroughput: # dumb heuristic
-        return sf
+    #elif tl == 0:
+    #    return sf
+    #elif tl == 1:
+    #    return sf + cf
+    #elif sf < maxflown[tl] - 2 * maxthroughput: # dumb heuristic
+    #    return sf
+    ov.append(pos)
 
-    if vd[pos]['rate'] > 0 and pos not in ov:
-        sf += cf
-        ov.append(pos)
-        cf += vd[pos]['rate']
+    for valve in okvalves:
+        if valve in ov:
+            continue
+        # get paths to valve
+        print("Looking up", valve)
+        step = 1
+        minsteps = 10
         for path in vd[pos]['paths']:
-            tf = increaseflow(path, tl-2, cf, sf+cf, ov[:])
-            mf = max(mf, tf)
-    for path in vd[pos]['paths']:
-        tf = increaseflow(path, tl-1, cf, sf+cf, ov[:])
+            steps = try_path(path, valve, step, minsteps, [])
+            minsteps = min(minsteps, steps)
+        ## Indentation
+        # now open this valve
+        #ov.append(valve)
+        snf = sf + (minsteps + 1) * cf
+        cnf = cf + vd[valve]['rate']
+        print("New valve opened", valve, tl-(minsteps+1), cnf, snf, ov)
+        tf = increaseflow(valve, tl-(minsteps+1), cnf, snf, ov[:])
         mf = max(mf, tf)
+    print("Returning increaseflow", mf)
     return mf
+
+
+
+
+    #if vd[pos]['rate'] > 0 and pos not in ov:
+    #    sf += cf
+    #    ov.append(pos)
+    #    cf += vd[pos]['rate']
+    #    for path in vd[pos]['paths']:
+    #        tf = increaseflow(path, tl-2, cf, sf+cf, ov[:])
+    #        mf = max(mf, tf)
+    #for path in vd[pos]['paths']:
+    #    tf = increaseflow(path, tl-1, cf, sf+cf, ov[:])
+    #    mf = max(mf, tf)
+    #return mf
 
 
 
@@ -204,6 +244,7 @@ minutes = 30
 vd = {}
 mf = 0
 usefulvalves = 0
+okvalves = []
 
 maxthroughput = 0
 maxflown = []
@@ -216,7 +257,8 @@ with open('Day16-Input--Debug', 'r') as file:
         valveid = line.split()[1]
         valverate = int(line.split('=')[1].split(';')[0])
         if valverate > 0:
-            usefulvalves += 1
+            usefulvalves += 1 # shall be obsolete.
+            okvalves.append(valveid)
             maxthroughput = max(maxthroughput, valverate)
         for i in line.split()[9:]:
             valvepath.append(i.rstrip(','))
