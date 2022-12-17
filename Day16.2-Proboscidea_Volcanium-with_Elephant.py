@@ -263,13 +263,8 @@ then it's the elephant's turn until his time > my time?
 
 
 def find_path(nowpos, target, step, maxsteps, visited): #maxsteps: min of maxsteps, tl. Needs to be >0.
-    #if target == nowpos:
-    #    return step
     if target in vd[nowpos]['paths']:
         return step+1
-    #if step >= maxsteps:
-    #    print("Eww. In the bin.")
-    #    return step
     if step + 1 == maxsteps:
         return maxsteps
     visited.append(nowpos)
@@ -295,7 +290,6 @@ def increaseflow(pos, tl, sf, ov):
     global mf
     print('Now:', pos, tl, sf, ov, sf, mf)
     if tl <= 2: 
-        #print("Can't do more:", tl, sf)
         return sf
     if len(ov) == len(usablevalves):
         print('Now just wait', ov)
@@ -304,8 +298,6 @@ def increaseflow(pos, tl, sf, ov):
     for valve in usablevalves:
         if valve in ov:
             continue
-        # get distaDebugnce to valve
-        #print("Looking up", valve)
         step = 0
         maxsteps = tl - 1
         steps = find_path(pos, valve, step, maxsteps, [])
@@ -336,12 +328,9 @@ with open('Day16-Input', 'r') as file:
         for i in line.split()[9:]:
             valvepath.append(i.rstrip(','))
         vd[valveid] = {'rate': valverate, 'paths': valvepath}
-        #print(vd[valveid]['rate'])
 
-print(usablevalves)
-#startpos = list(vd.keys())[0]
+#print(usablevalves)
 nsf = increaseflow(startpos, minutes, 0, [])
-print(nsf)
 mf = max(mf, nsf)
 print(mf)
 
