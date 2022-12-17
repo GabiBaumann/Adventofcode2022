@@ -167,6 +167,8 @@ Just computing the order isn't trivial: can be 29 x -- 27 or so x, so it's still
 Keep track of rooms with valve already-open. This is the second condition when not to open a valve.
 
 Organise input in a list of valve IDs being the name of dict with rate: int, path: list/tuple.
+
+New try: When opening a valve, add tolal value till end. Never mind keeping tabs on current flow level.
 """
 
 def find_path(nowpos, target, step, maxsteps, visited): #maxsteps: min of maxsteps, tl. Needs to be >0.
@@ -178,7 +180,7 @@ def find_path(nowpos, target, step, maxsteps, visited): #maxsteps: min of maxste
     #    print("Eww. In the bin.")
     #    return step
     if step + 1 == maxsteps:
-        return step+1
+        return maxsteps
     visited.append(nowpos)
     for path in vd[nowpos]['paths']:
         if path in visited:
@@ -188,7 +190,7 @@ def find_path(nowpos, target, step, maxsteps, visited): #maxsteps: min of maxste
     return maxsteps
 
 
-def increaseflow(pos, tl, cf, sf, ov):
+def increaseflow(pos, tl, sf, ov):
     """
     Find max flow within 30 minutes
     pos: current position
@@ -200,18 +202,16 @@ def increaseflow(pos, tl, cf, sf, ov):
     """
 
     global mf
-    #print('Now:', pos, tl, cf, sf, ov)
+    print('Now:', pos, tl, sf, ov, sf, mf)
     if tl <= 2: 
-        nsf = sf + (tl * cf)
-        #print("Can't do more:", tl, nsf)
-        return nsf
+        #print("Can't do more:", tl, sf)
+        return sf
     if len(ov) == len(usablevalves):
         print('Now just wait', ov)
-        return sf + tl * cf
+        return sf
 
     for valve in usablevalves:
         if valve in ov:
-            nsf = sf # now I start cargo-culting
             continue
         # get distaDebugnce to valve
         #print("Looking up", valve)
@@ -219,15 +219,14 @@ def increaseflow(pos, tl, cf, sf, ov):
         maxsteps = tl - 1
         steps = find_path(pos, valve, step, maxsteps, [])
         ntl = tl - (steps + 1)
-        nsf = sf + (steps + 1) * cf
-        ncf = cf + vd[valve]['rate']
-        nov = ov[:] 
+        #nsf = sf + (steps + 1) * cf
+        nsf = sf + vd[valve]['rate'] * ntl
+        nov = ov[:]
         nov.append(valve) # do that in param
-        if ntl > 0:
-            nsf = increaseflow(valve, ntl, ncf, nsf, nov[:])
+        if ntl > 2:
+            nsf = increaseflow(valve, ntl, nsf, nov[:])
         elif ntl < 0:
-            print("Eww. What am I doing here?", ntl, nsf, cf)
-            nsf = nsf - (cf * ntl * - 1)
+            print("Eww. What am I doing here?", ntl, nsf)
         #print(mf, nsf)
         mf = max(mf, nsf)
     return nsf
@@ -249,8 +248,9 @@ with open('Day16-Input', 'r') as file:
         vd[valveid] = {'rate': valverate, 'paths': valvepath}
         #print(vd[valveid]['rate'])
 
+print(usablevalves)
 startpos = list(vd.keys())[0]
-nsf = increaseflow(startpos, minutes, 0, 0, [])
+nsf = increaseflow(startpos, minutes, 0, [])
 print(nsf)
 mf = max(mf, nsf)
 print(mf)
@@ -258,5 +258,30 @@ print(mf)
 # 1562 is too much.
 # 1484 is too much.
 # 1482 is wrong. (Eww, no more hint.)
+# Hum.. got a verified path to 1482. Try 1483?
+# My understanding/verification must be wrong. 
+# Got a Solution that says 1474 on the internet.
 # 1464 is too little.
 # example out is 1651, which is right...
+
+"""
+Now: PP 6 1482 ['PL', 'TU', 'JY', 'RM', 'OC', 'PC', 'PZ', 'PP'] 1482 1437
+
+Now: PZ 9 1332 ['PL', 'TU', 'JY', 'RM', 'OC', 'PC', 'PZ'] 1332 1437
+Now: PC 13 1206 ['PL', 'TU', 'JY', 'RM', 'OC', 'PC'] 1206 1437
+Now: OC 16 1115 ['PL', 'TU', 'JY', 'RM', 'OC'] 1115 1387
+Now: RM 19 811 ['PL', 'TU', 'JY', 'RM'] 811 1387
+Now: JY 22 488 ['PL', 'TU', 'JY'] 488 1387
+Now: TU 26 246 ['PL', 'TU'] 246 1274
+Now: PL 29 116 ['PL'] 116 0
+
+
+4x29 (startpoint, 0) : 116.5x26 (PL: LI, GD, LB, IA, LZ / GD: PL, TU / TU: WS, GZ, MG, SJ, GD  (2): 116+130 246
+11 x22 (TU: WS, GZ, MG, SJ, GD / WS: ND, TU / ND: JY, WS / JY: UN, RD, ND (3) 246+ 242 = 488
+17x19 (JY: UN, RD, ND / UN: JY, RM / RM:OQ, UN (2) 488+323 = 811
+19x16 (RM:OQ, UN / OQ: RM, OC  / OC: OQ, PD (2) 811+304 = 1115
+7x13 (OC:OQ, PD / PD: OC, PC / PC: RY, WK, OG, PD (2) 1115+91 = 1206
+14x9 (PC: RY, WK, OG, PD/ OG: PC, HE /HE: PZ, OG / PZ: KU, HE (3) 1206+126 = 1332
+25x6 (PZ: KU, HE /KU: PZ, PP / PP: KU (2) 1332+150 = 1482
+"""
+
