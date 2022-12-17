@@ -262,7 +262,7 @@ then it's the elephant's turn until his time > my time?
 """
 
 
-def find_path(nowpos, target, step, maxsteps, visited): #maxsteps: min of maxsteps, tl. Needs to be >0.
+def find_path(nowpos, target, step, maxsteps, visited): #maxsteps needs to be >0.
     if target in vd[nowpos]['paths']:
         return step+1
     if step + 1 == maxsteps:
@@ -276,7 +276,7 @@ def find_path(nowpos, target, step, maxsteps, visited): #maxsteps: min of maxste
     return maxsteps
 
 
-def increaseflow(pos, tl, sf, ov):
+def increaseflow(pos_ele, pos_me, tl_ele, tl_me, sf, ov):
     """
     Find max flow within 30 minutes
     pos: current position
@@ -288,12 +288,22 @@ def increaseflow(pos, tl, sf, ov):
     """
 
     global mf
-    print('Now:', pos, tl, sf, ov, sf, mf)
+    
+    if tl_ele < tl_me:
+        prot = 'me'
+        tl = tl_me
+        pos = pos_me
+    else:
+        prot = 'ele'
+        tl = tl_ele
+        pos = pos_ele
+        
+    print('Now:', prot, pos, tl, sf, ov, sf, mf)
     if tl <= 2: 
-        return sf
+        return prot, sf
     if len(ov) == len(usablevalves):
         print('Now just wait', ov)
-        return sf
+        return prot, sf
 
     for valve in usablevalves:
         if valve in ov:
@@ -305,12 +315,13 @@ def increaseflow(pos, tl, sf, ov):
         nsf = sf + vd[valve]['rate'] * ntl
         nov = ov[:]
         nov.append(valve) # do that in param
-        if ntl > 2:
+        if ntl > 2: ## here, do some gymnastics for right call. prot(tl) is reduced, prot(pos) has moved, the other is constant.
+            # maybe give named parameters for a change. Or do lists with 0: ele, 1: me?
             nsf = increaseflow(valve, ntl, nsf, nov[:])
         elif ntl < 0:
             print("Eww. What am I doing here?", ntl, nsf)
         mf = max(mf, nsf)
-    return nsf
+    return prot, nsf
 
 minutes = 26
 startpos = 'AA'
@@ -329,8 +340,7 @@ with open('Day16-Input', 'r') as file:
             valvepath.append(i.rstrip(','))
         vd[valveid] = {'rate': valverate, 'paths': valvepath}
 
-#print(usablevalves)
-nsf = increaseflow(startpos, minutes, 0, [])
+nsf = increaseflow(startpos, startpos, minutes, minutes, 0, [])
 mf = max(mf, nsf)
 print(mf)
 
