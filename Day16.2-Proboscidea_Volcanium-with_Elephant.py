@@ -312,7 +312,7 @@ def increaseflow(pos, tl, sf, ov):
         mf = max(mf, nsf)
     return nsf
 
-minutes = 30
+minutes = 26
 startpos = 'AA'
 vd = {}
 mf = 0
@@ -333,41 +333,4 @@ with open('Day16-Input', 'r') as file:
 nsf = increaseflow(startpos, minutes, 0, [])
 mf = max(mf, nsf)
 print(mf)
-
-# 1562 is too much.
-# 1484 is too much.
-# 1482 is wrong. (Eww, no more hint.)
-# 1464 is too little.
-# Hum.. got a verified path to 1482. Try 1483?
-# My understanding/verification must be wrong. 
-# Got a Solution that says 1474 on the internet.
-# And consulting reddit gives me the proper hint: 
-# There IS an AA buried in the input. I missed that,
-# and started at the first line.
-# https://www.reddit.com/r/adventofcode/comments/zo2hu9/2022_day_16_part_1_clarification_regarding_the/
-#
-# example out is 1651, which is right...
-
-"""
-Now: PP 6 1482 ['PL', 'TU', 'JY', 'RM', 'OC', 'PC', 'PZ', 'PP'] 1482 1437
-Now: PZ 9 1332 ['PL', 'TU', 'JY', 'RM', 'OC', 'PC', 'PZ'] 1332 1437
-Now: PC 13 1206 ['PL', 'TU', 'JY', 'RM', 'OC', 'PC'] 1206 1437
-Now: OC 16 1115 ['PL', 'TU', 'JY', 'RM', 'OC'] 1115 1387
-Now: RM 19 811 ['PL', 'TU', 'JY', 'RM'] 811 1387
-Now: JY 22 488 ['PL', 'TU', 'JY'] 488 1387
-Now: TU 26 246 ['PL', 'TU'] 246 1274
-Now: PL 29 116 ['PL'] 116 0
-
-
-4x29 (startpoint, 0) : 116.5x26 (PL: LI, GD, LB, IA, LZ / GD: PL, TU / TU: WS, GZ, MG, SJ, GD  (2): 116+130 246
-11 x22 (TU: WS, GZ, MG, SJ, GD / WS: ND, TU / ND: JY, WS / JY: UN, RD, ND (3) 246+ 242 = 488
-17x19 (JY: UN, RD, ND / UN: JY, RM / RM:OQ, UN (2) 488+323 = 811
-19x16 (RM:OQ, UN / OQ: RM, OC  / OC: OQ, PD (2) 811+304 = 1115
-7x13 (OC:OQ, PD / PD: OC, PC / PC: RY, WK, OG, PD (2) 1115+91 = 1206
-14x9 (PC: RY, WK, OG, PD/ OG: PC, HE /HE: PZ, OG / PZ: KU, HE (3) 1206+126 = 1332
-25x6 (PZ: KU, HE /KU: PZ, PP / PP: KU (2) 1332+150 = 1482
-
-And the flaw was: Don't start at the beginning!
-There is an AA buried in the input, and I never came along that one. Urx.
-"""
 
