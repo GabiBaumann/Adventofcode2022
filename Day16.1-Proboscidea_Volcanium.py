@@ -169,11 +169,14 @@ Keep track of rooms with valve already-open. This is the second condition when n
 Organise input in a list of valve IDs being the name of dict with rate: int, path: list/tuple.
 
 New try: When opening a valve, add tolal value till end. Never mind keeping tabs on current flow level.
+
+Aaaargh:
+The trouble is: need to start at AA, not at first line.
 """
 
 def find_path(nowpos, target, step, maxsteps, visited): #maxsteps: min of maxsteps, tl. Needs to be >0.
-    if target == nowpos:
-        return step
+    #if target == nowpos:
+    #    return step
     if target in vd[nowpos]['paths']:
         return step+1
     #if step >= maxsteps:
@@ -219,7 +222,6 @@ def increaseflow(pos, tl, sf, ov):
         maxsteps = tl - 1
         steps = find_path(pos, valve, step, maxsteps, [])
         ntl = tl - (steps + 1)
-        #nsf = sf + (steps + 1) * cf
         nsf = sf + vd[valve]['rate'] * ntl
         nov = ov[:]
         nov.append(valve) # do that in param
@@ -227,11 +229,11 @@ def increaseflow(pos, tl, sf, ov):
             nsf = increaseflow(valve, ntl, nsf, nov[:])
         elif ntl < 0:
             print("Eww. What am I doing here?", ntl, nsf)
-        #print(mf, nsf)
         mf = max(mf, nsf)
     return nsf
 
 minutes = 30
+startpos = 'AA'
 vd = {}
 mf = 0
 usablevalves = []
@@ -249,7 +251,7 @@ with open('Day16-Input', 'r') as file:
         #print(vd[valveid]['rate'])
 
 print(usablevalves)
-startpos = list(vd.keys())[0]
+#startpos = list(vd.keys())[0]
 nsf = increaseflow(startpos, minutes, 0, [])
 print(nsf)
 mf = max(mf, nsf)
@@ -258,15 +260,19 @@ print(mf)
 # 1562 is too much.
 # 1484 is too much.
 # 1482 is wrong. (Eww, no more hint.)
+# 1464 is too little.
 # Hum.. got a verified path to 1482. Try 1483?
 # My understanding/verification must be wrong. 
 # Got a Solution that says 1474 on the internet.
-# 1464 is too little.
+# And consulting reddit gives me the proper hint: 
+# There IS an AA buried in the input. I missed that,
+# and started at the first line.
+# https://www.reddit.com/r/adventofcode/comments/zo2hu9/2022_day_16_part_1_clarification_regarding_the/
+#
 # example out is 1651, which is right...
 
 """
 Now: PP 6 1482 ['PL', 'TU', 'JY', 'RM', 'OC', 'PC', 'PZ', 'PP'] 1482 1437
-
 Now: PZ 9 1332 ['PL', 'TU', 'JY', 'RM', 'OC', 'PC', 'PZ'] 1332 1437
 Now: PC 13 1206 ['PL', 'TU', 'JY', 'RM', 'OC', 'PC'] 1206 1437
 Now: OC 16 1115 ['PL', 'TU', 'JY', 'RM', 'OC'] 1115 1387
@@ -283,5 +289,8 @@ Now: PL 29 116 ['PL'] 116 0
 7x13 (OC:OQ, PD / PD: OC, PC / PC: RY, WK, OG, PD (2) 1115+91 = 1206
 14x9 (PC: RY, WK, OG, PD/ OG: PC, HE /HE: PZ, OG / PZ: KU, HE (3) 1206+126 = 1332
 25x6 (PZ: KU, HE /KU: PZ, PP / PP: KU (2) 1332+150 = 1482
+
+And the flaw was: Don't start at the beginning!
+There is an AA buried in the input, and I never came along that one. Urx.
 """
 
