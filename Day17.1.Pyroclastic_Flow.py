@@ -356,7 +356,7 @@ yoff = 3
 floormax = 0
 floor = []
 for i in range(roomwidth):
-    floor.append( (0,0) )
+    floor.append( (i,0) )
 rocktotal = 0
 rockmax = 2022
 
@@ -401,6 +401,7 @@ llooplen = len(line)
 while rocktotal <= rockmax:
     rock = rocks[rockno]
     rockwidth = rockwidths[rockno]
+    rocktotal += 1
     rockno += 1
     if rockno == rlooplen:
         rockno = 0
@@ -419,20 +420,26 @@ while rocktotal <= rockmax:
             if xpos + rockwidth < roomwidth:
                 xpos += 1
         # now move down
-        if ypos > floormax:
+        if ypos > floormax + 1:
             ypos -=1
         else:
             for tile in rock:
                 x, y = tile[0], tile[1]
                 check = (xpos+x, ypos+y) # err, -1? depends...
-                print(check)
-                type(check)
+                #print(check)
                 if check in floor:
-                    print("Landed")
-            quit()
-            rocktotal = rockmax
-            settled = True
+                    # Landed
+                    settled = True
+                    break
+            if settled:
+                # append to floor
+                for tile in rock:
+                    x, y = tile[0], tile[1]
+                    floor.append( (xpos+x, ypos+y+1) )
+                    floormax = max(floormax, ypos+y)
+                #print(floormax, floor)
+            else:
+                ypos -= 1
 
-
-
-
+print(floor)
+print(floormax)
