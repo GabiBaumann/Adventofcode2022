@@ -365,6 +365,11 @@ Not really, but it might just work.
 Or even: cut off space x below floormax for a reasonably large x.
 
 Otherwise, check for an unbroken path from left to right...
+This still takes waaay to long...
+
+Or, wait! 
+I can compute when the whole thing repeats itself...
+If rockno == 0 and linepos == 0 
 """
 
 rockmax = 2022
@@ -416,11 +421,14 @@ with open('Day17-Input--Debug', 'r') as file:
 
 linepos = 0
 llooplen = len(line)
+breaker = 2
 
 while rocktotal < rockmax:
-    if rocktotal % 1000000 == 0:
+    if linepos == 0 and rockno == 0:
+        breaker -= 1
+        if breaker = 0:
+            break
 
-        print("Now", rocktotal)
     rock = rocks[rockno]
     rockwidth = rockwidths[rockno]
     rocktotal += 1
@@ -485,17 +493,18 @@ while rocktotal < rockmax:
                     floormax = max(floormax, ypos+y)
                 #print(floormax, floor)
                 # Reduce floor space
-                print("Reducing floor space", floormax, floormin)
+                #print("Reducing floor space", floormax, floormin)
                 if floormax > floormin + 2 * floorbuffer: # do a pile at once
                     floormin = floormax - floorbuffer
                     while True:
-                        delme = list.pop(0)
+                        delme = floor.pop(0)
                         if delme[1] > floormin:
                             break
 
             else:
                 ypos -= 1
 
+print("Went full circle after Rock", rocktotal)
 #print(floor)
 print(floormax)
 
