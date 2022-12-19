@@ -259,21 +259,23 @@ Can I keep my time and elephant time?
 Let the elephant do the first move opening a valve, 
 then it's my turn until my time > elephant time,
 then it's the elephant's turn until his time > my time?
+
+Do the find_path before the recursion for all functional valves and AA, instead 
+of computing them on the fly.
 """
 
-
-def find_path(nowpos, target, step, maxsteps, visited): #maxsteps needs to be >0.
+def find_path(nowpos, target, step, minsteps, visited): #maxsteps: min of maxsteps, tl. Needs to be >0.
     if target in vd[nowpos]['paths']:
         return step+1
-    if step + 1 == maxsteps:
-        return maxsteps
+    if step + 1 == minsteps:
+        return minsteps
     visited.append(nowpos)
     for path in vd[nowpos]['paths']:
         if path in visited:
             continue
-        steps = find_path(path, target, step+1, maxsteps, visited[:])
-        maxsteps = min(maxsteps, steps)
-    return maxsteps
+        steps = find_path(path, target, step+1, minsteps, visited[:])
+        minsteps = min(minsteps, steps)
+    return minsteps
 
 
 def increaseflow(pos_ele, pos_me, tl_ele, tl_me, sf, ov):
@@ -340,7 +342,30 @@ with open('Day16-Input', 'r') as file:
             valvepath.append(i.rstrip(','))
         vd[valveid] = {'rate': valverate, 'paths': valvepath}
 
-nsf = increaseflow(startpos, startpos, minutes, minutes, 0, [])
+distances = {}
+for target in usablevalves:
+    distances[target] = find_path('AA', target, 0, minutes, [])
+vd['AA']['dist'] = distances
+
+for valve in usablevalves:
+    distances = {}
+    for target in usablevalves:
+        if target == valve:
+            continue
+        steps = find_path(valve, target, 0, minutes, [])
+        distances[target] = steps
+    vd[valve]['dist'] = distances
+
+delthese = []
+for i in vd:
+    del vd[i]['paths']
+    if i not in usablevalves and i != 'AA':
+        delthese.append(i)
+for i in delthese:
+    del vd[i]
+print(vd)
+
+nsf = increaseflow('AA', 'AA', minutes, minutes, 0, [])
 mf = max(mf, nsf)
 print(mf)
 
