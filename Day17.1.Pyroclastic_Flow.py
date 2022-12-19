@@ -399,6 +399,7 @@ linepos = 0
 llooplen = len(line)
 
 while rocktotal < 2: #rockmax:
+    print('Next rock')
     rock = rocks[rockno]
     rockwidth = rockwidths[rockno]
     rocktotal += 1
@@ -406,7 +407,7 @@ while rocktotal < 2: #rockmax:
     if rockno == rlooplen:
         rockno = 0
     xpos = xoff
-    ypos = floormax + yoff
+    ypos = floormax + yoff + 1
     settled = False
     while not settled:
         jet = line[linepos]
@@ -414,18 +415,22 @@ while rocktotal < 2: #rockmax:
         if linepos == llooplen:
             linepos = 0
         if jet == '<':
+            print("Jet <")
             if xpos > 0:
                 xpos -= 1
+                print("Moves right", xpos,ypos)
         else:
+            print("Jet >")
             if xpos + rockwidth < roomwidth:
                 xpos += 1
+                print("Moves left", xpos, ypos)
         # now move down
         if ypos > floormax+1:
             ypos -=1
         else:
             for tile in rock:
                 x, y = tile[0], tile[1]
-                check = (xpos+x, ypos+y) # err, -1? depends...
+                check = (xpos+x, ypos+y-1) # err, -1? depends...
                 #print(check)
                 if check in floor:
                     # Landed
@@ -435,7 +440,7 @@ while rocktotal < 2: #rockmax:
                 # append to floor
                 for tile in rock:
                     x, y = tile[0], tile[1]
-                    floor.append( (xpos+x, ypos+y+1) )
+                    floor.append( (xpos+x, ypos+y) )
                     floormax = max(floormax, ypos+y)
                 #print(floormax, floor)
             else:
