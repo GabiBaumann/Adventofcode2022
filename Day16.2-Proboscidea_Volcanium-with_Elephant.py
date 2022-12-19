@@ -302,10 +302,10 @@ def increaseflow(pos_ele, pos_me, tl_ele, tl_me, sf, ov):
         
     print('Now:', prot, pos, tl, sf, ov, sf, mf)
     if tl <= 2: 
-        return prot, sf
+        return sf
     if len(ov) == len(usablevalves):
         print('Now just wait', ov)
-        return prot, sf
+        return sf
 
     for valve in usablevalves:
         if valve in ov:
@@ -323,7 +323,7 @@ def increaseflow(pos_ele, pos_me, tl_ele, tl_me, sf, ov):
         elif ntl < 0:
             print("Eww. What am I doing here?", ntl, nsf)
         mf = max(mf, nsf)
-    return prot, nsf
+    return nsf
 
 minutes = 26
 startpos = 'AA'
