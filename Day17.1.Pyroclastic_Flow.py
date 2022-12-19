@@ -398,7 +398,7 @@ with open('Day17-Input--Debug', 'r') as file:
 linepos = 0
 llooplen = len(line)
 
-while rocktotal <= rockmax:
+while rocktotal < 2: #rockmax:
     rock = rocks[rockno]
     rockwidth = rockwidths[rockno]
     rocktotal += 1
@@ -420,7 +420,7 @@ while rocktotal <= rockmax:
             if xpos + rockwidth < roomwidth:
                 xpos += 1
         # now move down
-        if ypos > floormax + 1:
+        if ypos > floormax+1:
             ypos -=1
         else:
             for tile in rock:
@@ -440,6 +440,8 @@ while rocktotal <= rockmax:
                 #print(floormax, floor)
             else:
                 ypos -= 1
+        #if not settled:
+        #    linepos += 1
 
 print(floor)
 print(floormax)
