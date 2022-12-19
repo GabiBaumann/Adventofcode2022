@@ -387,14 +387,15 @@ add height of start of repetition + modulo above from heightmap.
 """
 
 rockmax = 2022
+startrec = rockmax + 1
 rockmax = 1000000000000
 
 roomwidth = 7
 xoff = 2
 yoff = 3
 floormax = 0
-floormin = 0 # for reducing depth of the pile
-floorbuffer = 100
+#floormin = 0 # for reducing depth of the pile
+#floorbuffer = 100
 floor = []
 for i in range(roomwidth):
     floor.append( (i,0) )
@@ -524,14 +525,13 @@ while rocktotal < 9000: #rockmax:
                     floormax = max(floormax, ypos+y)
                 #print(floormax, floor)
                 # Reduce floor space
-                if floormax > floormin + 2 * floorbuffer: # do a pile at once
-                    floormin = floormax - floorbuffer
-                    #print("Reducing floor space", floormax, floormin)
-                    while True:
-                        delme = floor.pop(0)
-                        if delme[1] > floormin:
-                            break
-
+                #if floormax > floormin + 2 * floorbuffer: # do a pile at once
+                #    floormin = floormax - floorbuffer
+                #    #print("Reducing floor space", floormax, floormin)
+                #    while True:
+                #        delme = floor.pop(0)
+                #        if delme[1] > floormin:
+                #            break
             else:
                 ypos -= 1
 
