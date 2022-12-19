@@ -300,7 +300,7 @@ def increaseflow(pos_ele, pos_me, tl_ele, tl_me, sf, ov):
         tl = tl_ele
         pos = pos_ele
         
-    print('Now:', prot, pos, tl, sf, ov, sf, mf)
+    #print('Now:', prot, pos, tl, sf, ov, sf, mf)
     if tl <= 3: # no path is shorter than two. 
         return sf
     if len(ov) == len(usablevalves):
@@ -335,7 +335,7 @@ vd = {}
 mf = 0
 usablevalves = []
 
-with open('Day16-Input--Debug', 'r') as file:
+with open('Day16-Input', 'r') as file:
     for line in file:
         valvepath = []
         valveid = line.split()[1]
@@ -373,3 +373,5 @@ nsf = increaseflow('AA', 'AA', minutes, minutes, 0, [])
 mf = max(mf, nsf)
 print(mf)
 
+# 1707 for example input. This must be sound.
+# 2100 for real input.
