@@ -512,15 +512,18 @@ while rocktotal < rockmax:
 
 ## analyse loop recording
 check = (rockno, linepos)
-for i in range(len(looprec), 0, -1):
+for i in range(len(looprec)-1, 0, -1):
     if check == looprec[i]:
         break
-permutation = len(looprec) - i
-heightdiff = floormax - heightrec(i)
+permutation = len(looprec) - i + 1
+heightdiff = floormax - heightrec[i-1]
+print(rockno, floormax)
+print(permutation, heightdiff)
 
 perm_rounds = (rockmax - rocktotal) // permutation
 remain = (rockmax - rocktotal) % permutation
-floormax = (heightdiff - heightrec[i+remain]) + floormax + perm_rounds * heightdiff
+print(perm_rounds, remain)
+floormax = floormax + (heightdiff - (floormax - heightrec[i+remain-1])) + perm_rounds * heightdiff
 
 
 #print("Went full circle after Rock", rocktotal)
