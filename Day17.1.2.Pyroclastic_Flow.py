@@ -369,7 +369,21 @@ This still takes waaay to long...
 
 Or, wait! 
 I can compute when the whole thing repeats itself...
-If rockno == 0 and linepos == 0 
+It needs some headroom to swing in, though.
+So wait for repetition, compute distance to repeated,
+while also recording max(floor), ugh...
+
+In the example, repetition happens each 35 rocks adding 53 height after an intro of 14 rocks/ 25 height.
+
+In the test case, repetition happens each 1730 rocks adding 2647 height.
+Beware: the intro is 1755 long.
+
+So, run the code for some 2000 loops, start recording height and stone/line numbers, find the loopy bit, save final height/rock number.
+
+Pop from a copy of recording until start of repetition is known, thus knowing number of rocks in repetition and height gain.
+
+Compute (rockmax - start of repetition) // rocks in repetition,
+add height of start of repetition + modulo above from heightmap.
 """
 
 rockmax = 2022
@@ -415,19 +429,36 @@ rockwidths.append(2)
 rockno = 0 # current number in loop(len(rocks))
 rlooplen = len(rocks)
 
-with open('Day17-Input--Debug', 'r') as file:
+#with open('Day17-Input--Debug', 'r') as file:
+with open('Day17-Input', 'r') as file:
     line = file.read()
     line = line.rstrip()
 
 linepos = 0
 llooplen = len(line)
 breaker = 2
-
-while rocktotal < rockmax:
-    if linepos == 0 and rockno == 0:
-        breaker -= 1
-        if breaker = 0:
-            break
+looper = []
+heightrec = []
+while rocktotal < 9000: #rockmax:
+    #if linepos == rockno == 0:
+    #    print("Ping!")
+    #    breaker -= 1
+    #    if breaker == 0:
+    #        break
+    #print(linepos)
+    #if (rockno, linepos) in looper:
+    #    print(rockno, linepos)
+    #    # break
+    #else:
+    #    looper.append((rockno, linepos))
+    #if (rockno, linepos) in looper:
+    #    print("Ping", rockno, linepos, rocktotal, floormax)
+    #    break
+    if (rockno, linepos) not in looper:
+        looper.append((rockno, linepos))
+    heightrec.append(floormax)
+    if rockno == 0 and linepos == 166:
+        print(rockno, linepos, rocktotal, floormax)
 
     rock = rocks[rockno]
     rockwidth = rockwidths[rockno]
@@ -445,7 +476,7 @@ while rocktotal < rockmax:
             linepos = 0
         if jet == '<':
             #print("Jet <")
-            if xpos > 0: # OR colliding
+            if xpos > 0: # OR collidi ng
                 if ypos > floormax:
                     xpos -= 1
                 else:
@@ -493,9 +524,9 @@ while rocktotal < rockmax:
                     floormax = max(floormax, ypos+y)
                 #print(floormax, floor)
                 # Reduce floor space
-                #print("Reducing floor space", floormax, floormin)
                 if floormax > floormin + 2 * floorbuffer: # do a pile at once
                     floormin = floormax - floorbuffer
+                    #print("Reducing floor space", floormax, floormin)
                     while True:
                         delme = floor.pop(0)
                         if delme[1] > floormin:
@@ -505,6 +536,7 @@ while rocktotal < rockmax:
                 ypos -= 1
 
 print("Went full circle after Rock", rocktotal)
+#print(looper)
 #print(floor)
 print(floormax)
 
