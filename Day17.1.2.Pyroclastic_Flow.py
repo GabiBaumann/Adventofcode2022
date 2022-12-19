@@ -488,9 +488,10 @@ while rocktotal < rockmax:
                 print("Reducing floor space", floormax, floormin)
                 if floormax > floormin + 2 * floorbuffer: # do a pile at once
                     floormin = floormax - floorbuffer
-                    for tile in floor:
-                        if tile[1] < floormin:
-                            floor.pop(tile)
+                    while True:
+                        delme = list.pop(0)
+                        if delme[1] > floormin:
+                            break
 
             else:
                 ypos -= 1
