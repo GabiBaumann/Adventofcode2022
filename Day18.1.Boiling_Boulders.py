@@ -40,7 +40,7 @@ First hunch: look at each input line, if x+-1,y,z are in list, subtract one for 
 surface = 0
 cubes = []
 
-with open('Day18-Input--Debug', 'r') as file:
+with open('Day18-Input', 'r') as file:
     for line in file:
         x, y, z = line.strip().split(',')
         x = int(x)
@@ -66,4 +66,4 @@ for cube in cubes:
     surface += s
 print(surface)
 
-
+# 4548
