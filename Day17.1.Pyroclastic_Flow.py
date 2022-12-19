@@ -389,7 +389,7 @@ rockwidths.append(2)
 rockno = 0 # current number in loop(len(rocks))
 rlooplen = len(rocks)
 
-with open('Day17-Input--Debug', 'r') as file:
+with open('Day17-Input', 'r') as file:
     line = file.read()
     line = line.rstrip()
     # shall I do a list or just loop through the chars?
@@ -468,3 +468,5 @@ while rocktotal < rockmax:
 
 print(floor)
 print(floormax)
+
+# 3090
