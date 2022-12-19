@@ -171,4 +171,20 @@ Determine the quality level of each blueprint by multiplying that blueprint's ID
 Determine the quality level of each blueprint using the largest number of geodes it could produce in 24 minutes. What do you get if you add up the quality level of all of the blueprints in your list?
 """
 
+"""
+Another recursion. 
+Can be run while reading input.
+"""
 
+with open('Day19-Input--Debug', 'r') as file:
+    for line in file:
+        blueprint, line = line.rstrip('.\n').split(':')
+        blueprint = blueprint[-1]
+        for recipe in line.split('.'):
+            robot, costs = recipe.split('costs')
+            robot = robot.split()[1]
+            for cost in costs.split('and'):
+                number, material = cost.split()
+                print(blueprint, robot, material, number)
+
+        
