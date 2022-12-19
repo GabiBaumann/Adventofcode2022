@@ -387,20 +387,20 @@ add height of start of repetition + modulo above from heightmap.
 """
 
 rockmax = 2022
-startrec = rockmax + 1
+startrecording = rockmax
 rockmax = 1000000000000
 
 roomwidth = 7
 xoff = 2
 yoff = 3
 floormax = 0
-#floormin = 0 # for reducing depth of the pile
-#floorbuffer = 100
+looprec = []
+heightrec = []
 floor = []
 for i in range(roomwidth):
     floor.append( (i,0) )
-rocktotal = 0
 
+rocktotal = 0
 rocks = []
 rockwidths = []
 # Rock ####
@@ -430,37 +430,21 @@ rockwidths.append(2)
 rockno = 0 # current number in loop(len(rocks))
 rlooplen = len(rocks)
 
-#with open('Day17-Input--Debug', 'r') as file:
-with open('Day17-Input', 'r') as file:
+with open('Day17-Input--Debug', 'r') as file:
+#with open('Day17-Input', 'r') as file:
     line = file.read()
     line = line.rstrip()
 
 linepos = 0
 llooplen = len(line)
-breaker = 2
-looper = []
-heightrec = []
-while rocktotal < 9000: #rockmax:
-    #if linepos == rockno == 0:
-    #    print("Ping!")
-    #    breaker -= 1
-    #    if breaker == 0:
-    #        break
-    #print(linepos)
-    #if (rockno, linepos) in looper:
-    #    print(rockno, linepos)
-    #    # break
-    #else:
-    #    looper.append((rockno, linepos))
-    #if (rockno, linepos) in looper:
-    #    print("Ping", rockno, linepos, rocktotal, floormax)
-    #    break
-    if (rockno, linepos) not in looper:
-        looper.append((rockno, linepos))
-    heightrec.append(floormax)
-    if rockno == 0 and linepos == 166:
-        print(rockno, linepos, rocktotal, floormax)
 
+while rocktotal < rockmax:
+    if rocktotal > startrecording:
+        if (rockno, linepos) in looprec:
+            break
+        else:
+            looprec.append( (rockno, linepos) )
+            heightrec.append(floormax)
     rock = rocks[rockno]
     rockwidth = rockwidths[rockno]
     rocktotal += 1
@@ -523,19 +507,23 @@ while rocktotal < 9000: #rockmax:
                     x, y = tile[0], tile[1]
                     floor.append( (xpos+x, ypos+y) )
                     floormax = max(floormax, ypos+y)
-                #print(floormax, floor)
-                # Reduce floor space
-                #if floormax > floormin + 2 * floorbuffer: # do a pile at once
-                #    floormin = floormax - floorbuffer
-                #    #print("Reducing floor space", floormax, floormin)
-                #    while True:
-                #        delme = floor.pop(0)
-                #        if delme[1] > floormin:
-                #            break
             else:
                 ypos -= 1
 
-print("Went full circle after Rock", rocktotal)
+## analyse loop recording
+check = (rockno, linepos)
+for i in range(len(looprec), 0, -1):
+    if check == looprec[i]:
+        break
+permutation = len(looprec) - i
+heightdiff = floormax - heightrec(i)
+
+perm_rounds = (rockmax - rocktotal) // permutation
+remain = (rockmax - rocktotal) % permutation
+floormax = (heightdiff - heightrec[i+remain]) + floormax + perm_rounds * heightdiff
+
+
+#print("Went full circle after Rock", rocktotal)
 #print(looper)
 #print(floor)
 print(floormax)
