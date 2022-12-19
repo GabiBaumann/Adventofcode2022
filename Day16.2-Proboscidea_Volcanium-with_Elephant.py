@@ -301,7 +301,7 @@ def increaseflow(pos_ele, pos_me, tl_ele, tl_me, sf, ov):
         pos = pos_ele
         
     print('Now:', prot, pos, tl, sf, ov, sf, mf)
-    if tl <= 2: 
+    if tl <= 3: # no path is shorter than two. 
         return sf
     if len(ov) == len(usablevalves):
         print('Now just wait', ov)
@@ -317,11 +317,14 @@ def increaseflow(pos_ele, pos_me, tl_ele, tl_me, sf, ov):
         nsf = sf + vd[valve]['rate'] * ntl
         nov = ov[:]
         nov.append(valve) # do that in param
-        if ntl > 2: ## here, do some gymnastics for right call. prot(tl) is reduced, prot(pos) has moved, the other is constant.
+        if ntl > 3: ## here, do some gymnastics for right call. prot(tl) is reduced, prot(pos) has moved, the other is constant.
             # maybe give named parameters for a change. Or do lists with 0: ele, 1: me?
-            nsf = increaseflow(valve, ntl, nsf, nov[:])
-        elif ntl < 0:
-            print("Eww. What am I doing here?", ntl, nsf)
+            if prot = 'ele':
+                nsf = increaseflow(valve, pos_me, ntl, tl_me, nsf, nov[:])
+            else:
+                nsf = increaseflow(pos_ele, valve, tl_ele, ntl, nsf, nov[:])
+        #elif ntl < 0:
+        #    print("Eww. What am I doing here?", ntl, nsf)
         mf = max(mf, nsf)
     return nsf
 
@@ -354,7 +357,7 @@ for valve in usablevalves:
             continue
         steps = find_path(valve, target, 0, minutes, [])
         distances[target] = steps
-    vd[valve]['dist'] = distances
+    vd[valve]['dist'] = dist)ances
 
 delthese = []
 for i in vd:
@@ -364,6 +367,8 @@ for i in vd:
 for i in delthese:
     del vd[i]
 print(vd)
+for i in vd:
+    print(vd[i]['dist'])
 
 nsf = increaseflow('AA', 'AA', minutes, minutes, 0, [])
 mf = max(mf, nsf)
