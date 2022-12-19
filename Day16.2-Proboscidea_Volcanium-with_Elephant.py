@@ -357,7 +357,7 @@ for valve in usablevalves:
             continue
         steps = find_path(valve, target, 0, minutes, [])
         distances[target] = steps
-    vd[valve]['dist'] = dist)ances
+    vd[valve]['dist'] = distances
 
 delthese = []
 for i in vd:
@@ -367,8 +367,6 @@ for i in vd:
 for i in delthese:
     del vd[i]
 print(vd)
-for i in vd:
-    print(vd[i]['dist'])
 
 nsf = increaseflow('AA', 'AA', minutes, minutes, 0, [])
 mf = max(mf, nsf)
