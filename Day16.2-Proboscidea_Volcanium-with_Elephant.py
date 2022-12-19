@@ -310,16 +310,17 @@ def increaseflow(pos_ele, pos_me, tl_ele, tl_me, sf, ov):
     for valve in usablevalves:
         if valve in ov:
             continue
-        step = 0
-        maxsteps = tl - 1
-        steps = find_path(pos, valve, step, maxsteps, [])
+        #step = 0
+        #maxsteps = tl - 1
+        #steps = find_path(pos, valve, step, maxsteps, [])
+        steps = vd[pos]['dist'][valve]
         ntl = tl - (steps + 1)
         nsf = sf + vd[valve]['rate'] * ntl
         nov = ov[:]
         nov.append(valve) # do that in param
         if ntl > 3: ## here, do some gymnastics for right call. prot(tl) is reduced, prot(pos) has moved, the other is constant.
             # maybe give named parameters for a change. Or do lists with 0: ele, 1: me?
-            if prot = 'ele':
+            if prot == 'ele':
                 nsf = increaseflow(valve, pos_me, ntl, tl_me, nsf, nov[:])
             else:
                 nsf = increaseflow(pos_ele, valve, tl_ele, ntl, nsf, nov[:])
@@ -334,7 +335,7 @@ vd = {}
 mf = 0
 usablevalves = []
 
-with open('Day16-Input', 'r') as file:
+with open('Day16-Input--Debug', 'r') as file:
     for line in file:
         valvepath = []
         valveid = line.split()[1]
