@@ -347,8 +347,6 @@ represent floor as tuples in a list.
 Just using max(y) won't do. 
 
 I think it may not make sense to go for a ruleset to reduce floor space?
-
-It might for pt. 2 :(
 """
 
 """
@@ -359,6 +357,16 @@ In the example above, the tower would be 1514285714288 units tall!
 How tall will the tower be after 1000000000000 rocks have stopped?
 """
 
+"""
+Now reducing floor space is needed to get to a solution in any useful time.
+Can I go for minimum of maximum floor heights?
+Not really, but it might just work.
+
+Or even: cut off space x below floormax for a reasonably large x.
+
+Otherwise, check for an unbroken path from left to right...
+"""
+
 rockmax = 2022
 rockmax = 1000000000000
 
@@ -366,6 +374,8 @@ roomwidth = 7
 xoff = 2
 yoff = 3
 floormax = 0
+floormin = 0 # for reducing depth of the pile
+floorbuffer = 100
 floor = []
 for i in range(roomwidth):
     floor.append( (i,0) )
@@ -403,14 +413,14 @@ rlooplen = len(rocks)
 with open('Day17-Input--Debug', 'r') as file:
     line = file.read()
     line = line.rstrip()
-    # shall I do a list or just loop through the chars?
-    # (if char = \n then start over)
 
 linepos = 0
 llooplen = len(line)
 
 while rocktotal < rockmax:
-    print('Next rock')
+    if rocktotal % 1000000 == 0:
+
+        print("Now", rocktotal)
     rock = rocks[rockno]
     rockwidth = rockwidths[rockno]
     rocktotal += 1
@@ -426,7 +436,7 @@ while rocktotal < rockmax:
         if linepos == llooplen:
             linepos = 0
         if jet == '<':
-            print("Jet <")
+            #print("Jet <")
             if xpos > 0: # OR colliding
                 if ypos > floormax:
                     xpos -= 1
@@ -439,9 +449,9 @@ while rocktotal < rockmax:
                             can_move = False
                     if can_move:
                         xpos -= 1
-                print("Moves right", xpos,ypos)
+                #print("Moves right", xpos,ypos)
         else:
-            print("Jet >")
+            #print("Jet >")
             if xpos + rockwidth < roomwidth: # OR colliding
                 if ypos > floormax:
                     xpos += 1
@@ -454,7 +464,7 @@ while rocktotal < rockmax:
                             can_move = False
                     if can_move:
                         xpos += 1
-                print("Moves left", xpos, ypos)
+                #print("Moves left", xpos, ypos)
         # now move down
         if ypos > floormax+1:
             ypos -=1
@@ -474,10 +484,18 @@ while rocktotal < rockmax:
                     floor.append( (xpos+x, ypos+y) )
                     floormax = max(floormax, ypos+y)
                 #print(floormax, floor)
+                # Reduce floor space
+                print("Reducing floor space", floormax, floormin)
+                if floormax > floormin + 2 * floorbuffer: # do a pile at once
+                    floormin = floormax - floorbuffer
+                    for tile in floor:
+                        if tile[1] < floormin:
+                            floor.pop(tile)
+
             else:
                 ypos -= 1
 
-print(floor)
+#print(floor)
 print(floormax)
 
-# 3090
+# 3090 for 17.1
