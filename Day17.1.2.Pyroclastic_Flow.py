@@ -348,7 +348,19 @@ Just using max(y) won't do.
 
 I think it may not make sense to go for a ruleset to reduce floor space?
 
+It might for pt. 2 :(
 """
+
+"""
+The elephants are not impressed by your simulation. They demand to know how tall the tower will be after 1000000000000 rocks have stopped! Only then will they feel confident enough to proceed through the cave.
+
+In the example above, the tower would be 1514285714288 units tall!
+
+How tall will the tower be after 1000000000000 rocks have stopped?
+"""
+
+rockmax = 2022
+rockmax = 1000000000000
 
 roomwidth = 7
 xoff = 2
@@ -358,7 +370,6 @@ floor = []
 for i in range(roomwidth):
     floor.append( (i,0) )
 rocktotal = 0
-rockmax = 2022
 
 rocks = []
 rockwidths = []
@@ -389,7 +400,7 @@ rockwidths.append(2)
 rockno = 0 # current number in loop(len(rocks))
 rlooplen = len(rocks)
 
-with open('Day17-Input', 'r') as file:
+with open('Day17-Input--Debug', 'r') as file:
     line = file.read()
     line = line.rstrip()
     # shall I do a list or just loop through the chars?
