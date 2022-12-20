@@ -244,6 +244,7 @@ resources = { 'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
 
 recipes = []
 recipe = {}
+maxgeodes = 0
 
 with open('Day19-Input--Debug', 'r') as file:
     for line in file:
@@ -263,5 +264,7 @@ print(recipes)
 for r in recipes:
     # recources mined in this round
     geodes = nextminute(r, minutes, cp(bots), cp(resources)) # cp not needed
+    print("Full run", geodes)
+    maxgeodes = max(maxgeodes, geodes)
 
-print(geodes)
+print(maxgeodes)
