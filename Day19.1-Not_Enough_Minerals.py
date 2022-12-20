@@ -173,18 +173,47 @@ Determine the quality level of each blueprint using the largest number of geodes
 
 """
 Another recursion. 
-Can be run while reading input.
+Can be run while reading input. But.
+
+Ore and clay bots use one ingredient, 
+obsidian and geode bots use two.
 """
+
+minutes = 24
+bots = { 'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}
+resources = { 'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
+
+recipes = []
+recipe = {}
+
+
 
 with open('Day19-Input--Debug', 'r') as file:
     for line in file:
         blueprint, line = line.rstrip('.\n').split(':')
         blueprint = blueprint[-1]
-        for recipe in line.split('.'):
-            robot, costs = recipe.split('costs')
+        for item in line.split('.'):
+            robot, costs = item.split('costs')
             robot = robot.split()[1]
+            recipe[robot] = {}
             for cost in costs.split('and'):
                 number, material = cost.split()
-                print(blueprint, robot, material, number)
+                recipe[robot][material] = int(number)
+        recipes.append(recipe)
 
-        
+print(recipes)
+
+for r in recipes:
+    # recources mined in this round
+    for b in bots:
+        resources[b] += bots[b]
+    # branch out: build any one bot possible, or don't build
+    canbuild = True
+    for i in r['ore']:
+        if r['ore'][i] > resources[i]:
+            canbuild = False
+            break
+    if canbuild:
+        geode = nextminute(
+
+    
