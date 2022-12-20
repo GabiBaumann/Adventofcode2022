@@ -64,4 +64,25 @@ Numbers in the input file are not unique, so this is not straightforward.
 Keep a pair of lists for items and positions, shifting positions for the affected range after each move?
 """
 
+work = []
+ref = []
+pos = []
+length = 0
+
+with open('Day20-Input--Debug', 'r') as file:
+    for line in file:
+        number = int(line)
+        work.append(number)
+        ref.append(number)
+        pos.append(length)
+        length += 1
+
+for count in range(length):
+    number = ref[count]
+    position = pos[i]
+    nextpos = (position + number) % length
+    if nextpos > position:
+        for i in range(position+1,nextpos):
+            print("Ewww. Need to do reverse pos lookup, it's not in ordered range.")    
+            print("Or rather: go through pos list, and work on all values in range!")
 
