@@ -179,14 +179,71 @@ Ore and clay bots use one ingredient,
 obsidian and geode bots use two.
 """
 
+from copy import copy as cp
+
+def nextminute(r, tl, bots, resources):
+    "Things happening this minute"
+    tl -= 1
+    if tl == 0:
+        return resources['geode']
+    # mining for this round
+    for b in bots:
+        resources[b] += bots[b]
+    # call recursively with each possible bot to build. Or without building.
+    # build nothing
+    geodes = nextminute(r, tl, cp(bots), cp(resources))
+    # build ore bot
+    # this can be done in a for loop, rather than doing it case-by-case, 
+    # taking len(recipe) into account, but keep it simpler for now.
+    maxgeodes = 0
+    for i in r['ore']:
+        res_needed = r['ore'][i]
+        if resources[i] - bots[i] >= res_needed: # -bots, because they havent mined for this round yet.
+            resources[i] -= res_needed
+            bots['ore'] += 1
+            geodes = nextminute(r, tl, cp(bots), cp(resources))
+            maxgeodes = max(maxgeodes, geodes)
+    # build clay bot
+    for i in r['clay']:
+        res_needed = r['ore'][i]
+        if resources[i] - bots[i] >= res_needed:
+            resources[i] -= res_needed
+            bots['clay'] += 1
+            geodes = nextminute(r, tl, cp(bots), cp(resources))
+            maxgeodes = max(maxgeodes, geodes)
+    # build odidian bot
+    temp = {}
+    for i in r['obsidian']:
+        res_needed = r['obsidian'][i]
+        if resources[i] - bots[i] >= res_needed:
+            temp[i] = res_needed
+    if len(temp) == 2:
+        for i in temp:
+            resources[i] -= temp[i]
+        bots['obsidian'] += 1
+        geodes = nextminute(r, tl, cp(bots), cp(resources))
+        maxgeodes = max(maxgeodes, geodes)
+    # build geode bot
+    temp = {}
+    for i in r['geode']:
+        res_needed = r['geode'][i]
+        if resources[i] - bots[i] >= res_needed:
+            temp[i] = res_needed
+    if len(temp) == 2:
+        for i in temp:
+            resources[i] -= temp[i]
+        bots['geode'] += 1
+        geodes = nextminute(r, tl, cp(bots), cp(resources))
+        maxgeodes = max(maxgeodes, geodes)
+    return maxgeodes
+
+
 minutes = 24
 bots = { 'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}
 resources = { 'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
 
 recipes = []
 recipe = {}
-
-
 
 with open('Day19-Input--Debug', 'r') as file:
     for line in file:
@@ -205,15 +262,6 @@ print(recipes)
 
 for r in recipes:
     # recources mined in this round
-    for b in bots:
-        resources[b] += bots[b]
-    # branch out: build any one bot possible, or don't build
-    canbuild = True
-    for i in r['ore']:
-        if r['ore'][i] > resources[i]:
-            canbuild = False
-            break
-    if canbuild:
-        geode = nextminute(
+    geodes = nextminute(r, minutes, cp(bots), cp(resources)) # cp not needed
 
-    
+print(geodes)
