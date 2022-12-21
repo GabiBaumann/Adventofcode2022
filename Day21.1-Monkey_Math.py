@@ -45,4 +45,128 @@ This process continues until root yells a number: 152.
 However, your actual situation involves considerably more monkeys. What number will the monkey named root yell?
 """
 
+"""
+root does an addition in both example and test
+"""
 
+def getsum(a, b):
+    if monkey[a].isdigit():
+        r1 = monkey[a]
+    elif monkey[a]['op'] == '+':
+        r1 = getsum(monkey[a]['v1'], monkey[a]['v2'])
+    elif monkey[a]['op'] == '-':
+        r1 = getdiff(monkey[a]['v1'], monkey[a]['v2'])
+    elif monkey[a]['op'] == '*':
+        r1 = getprod(monkey[a]['v1'], monkey[a]['v2'])
+    else:
+        r1 = getdiv(monkey[a]['v1'], monkey[a]['v2'])
+    
+    if monkey[b].isdigit():
+        r2 = monkey[b]
+    elif monkey[b]['op'] == '+':
+        r2 = getsum(monkey[b]['v1'], monkey[b]['v2'])
+    elif monkey[b]['op'] == '-':
+        r2 = getdiff(monkey[b]['v1'], monkey[b]['v2'])
+    elif monkey[b]['op'] == '*':
+        r2 = getprod(monkey[b]['v1'], monkey[b]['v2'])
+    else:
+        r2 = getdiv(monkey[b]['v1'], monkey[b]['v2'])
+
+    return r1 + r2
+
+def getdiff(a, b):
+    if monkey[a].isdigit():
+        r1 = monkey[a]
+    elif monkey[a]['op'] == '+':
+        r1 = getsum(monkey[a]['v1'], monkey[a]['v2'])
+    elif monkey[a]['op'] == '-':
+        r1 = getdiff(monkey[a]['v1'], monkey[a]['v2'])
+    elif monkey[a]['op'] == '*':
+        r1 = getprod(monkey[a]['v1'], monkey[a]['v2'])
+    else:
+        r1 = getdiv(monkey[a]['v1'], monkey[a]['v2'])
+    
+    if monkey[b].isdigit():
+        r2 = monkey[b]
+    elif monkey[b]['op'] == '+':
+        r2 = getsum(monkey[b]['v1'], monkey[b]['v2'])
+    elif monkey[b]['op'] == '-':
+        r2 = getdiff(monkey[b]['v1'], monkey[b]['v2'])
+    elif monkey[b]['op'] == '*':
+        r2 = getprod(monkey[b]['v1'], monkey[b]['v2'])
+    else:
+        r2 = getdiv(monkey[b]['v1'], monkey[b]['v2'])
+
+    return r1 - r2
+
+def getprod(a, b):
+    if monkey[a].isdigit():
+        r1 = monkey[a]
+    elif monkey[a]['op'] == '+':
+        r1 = getsum(monkey[a]['v1'], monkey[a]['v2'])
+    elif monkey[a]['op'] == '-':
+        r1 = getdiff(monkey[a]['v1'], monkey[a]['v2'])
+    elif monkey[a]['op'] == '*':
+        r1 = getprod(monkey[a]['v1'], monkey[a]['v2'])
+    else:
+        r1 = getdiv(monkey[a]['v1'], monkey[a]['v2'])
+    
+    if monkey[b].isdigit():
+        r2 = monkey[b]
+    elif monkey[b]['op'] == '+':
+        r2 = getsum(monkey[b]['v1'], monkey[b]['v2'])
+    elif monkey[b]['op'] == '-':
+        r2 = getdiff(monkey[b]['v1'], monkey[b]['v2'])
+    elif monkey[b]['op'] == '*':
+        r2 = getprod(monkey[b]['v1'], monkey[b]['v2'])
+    else:
+        r2 = getdiv(monkey[b]['v1'], monkey[b]['v2'])
+
+    return r1 * r2
+
+def getdiv(a, b):
+    if monkey[a].isdigit():
+        r1 = monkey[a]
+    elif monkey[a]['op'] == '+':
+        r1 = getsum(monkey[a]['v1'], monkey[a]['v2'])
+    elif monkey[a]['op'] == '-':
+        r1 = getdiff(monkey[a]['v1'], monkey[a]['v2'])
+    elif monkey[a]['op'] == '*':
+        r1 = getprod(monkey[a]['v1'], monkey[a]['v2'])
+    else:
+        r1 = getdiv(monkey[a]['v1'], monkey[a]['v2'])
+    
+    if monkey[b].isdigit():
+        r2 = monkey[b]
+    elif monkey[b]['op'] == '+':
+        r2 = getsum(monkey[b]['v1'], monkey[b]['v2'])
+    elif monkey[b]['op'] == '-':
+        r2 = getdiff(monkey[b]['v1'], monkey[b]['v2'])
+    elif monkey[b]['op'] == '*':
+        r2 = getprod(monkey[b]['v1'], monkey[b]['v2'])
+    else:
+        r2 = getdiv(monkey[b]['v1'], monkey[b]['v2'])
+
+    return r1 // r2
+
+
+monkey = {}
+with open('Day21-Input--Debug', 'r') as file:
+    for line in file:
+        name, term = line.rstrip().split(':')
+        if term.isdigit():
+            monkey[name]: term
+            continue
+        elif '+' in term:
+            a, b = term.split('+')
+        elif '-' in term:
+            a, b = term.split('-')
+        elif '*' in term:
+            a, b = term.split('*')
+        else:
+            a, b = term.split('/')
+        monkey[name]['v1'] = a
+        monkey[name]['v2'] = b
+
+result = getsum(monkey['root']['v1'], monkey['root']['v2'])
+print(result)
