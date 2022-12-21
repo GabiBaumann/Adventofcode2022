@@ -187,7 +187,7 @@ from copy import copy as cp
 
 def buildbot(r,tl, bots, resources):
     "Build any bot if at all possible, recurse."
-    #print("Called", tl, bots, resources)
+    print("Called", tl, bots, resources)
     called_none = True
     maxgeodes = 0
     # ore bot (always possible)
@@ -305,7 +305,6 @@ print(recipes)
 i = 0
 ql = 0
 for r in recipes:
-    # recources mined in this round
     i += 1
     geodes = buildbot(r, minutes, cp(bots), cp(resources)) # cp not needed
     print("Full run", geodes)
