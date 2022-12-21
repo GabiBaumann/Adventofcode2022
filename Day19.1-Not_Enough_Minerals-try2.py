@@ -279,7 +279,7 @@ resources = { 'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
 recipes = []
 maxgeodes = 0
 
-with open('Day19-Input--Debug', 'r') as file:
+with open('Day19-Input', 'r') as file:
     for line in file:
         recipe = {}
         blueprint, line = line.rstrip('.\n').split(':')
@@ -307,4 +307,5 @@ for r in recipes:
 print(maxgeodes)
 print(ql)
 
+# 1550 it is.
 # 1343 is too low.
