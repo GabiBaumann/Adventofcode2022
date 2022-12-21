@@ -204,7 +204,7 @@ def buildbot(r,tl, bots, resources):
         pass_res['ore'] -= ore_needed
         pass_bots = cp(bots)
         pass_bots['ore'] += 1
-        geodes = buildbot(r, tl-duration, pass_bots, pass_resources)
+        geodes = buildbot(r, tl-duration, pass_bots, pass_res)
         maxgeodes = max(maxgeodes, geodes)
     # clay bot (always possible)
     ore_needed = r['ore']['ore']
@@ -220,7 +220,7 @@ def buildbot(r,tl, bots, resources):
         pass_res['ore'] -= ore_needed
         pass_bots = cp(bots)
         pass_bots['clay'] += 1
-        geodes = buildbot(r,tl-duration, pass_bots, pass_resources)
+        geodes = buildbot(r,tl-duration, pass_bots, pass_res)
         maxgeodes = max(maxgeodes, geodes)
     # obsidian bot
     if bots['clay']:
@@ -243,7 +243,7 @@ def buildbot(r,tl, bots, resources):
             pass_res['clay'] -= clay_needed
             pass_bots = cp(bots)
             pass_bots['obsidian'] += 1
-            geodes = buildbot(r, tl-duration, pass_bots, pass_resources)
+            geodes = buildbot(r, tl-duration, pass_bots, pass_res)
             maxgeodes = max(maxgeodes, geodes)
     # geode bot
     if bots['obsidian']:
@@ -266,7 +266,7 @@ def buildbot(r,tl, bots, resources):
             pass_res['obsidian'] -= obs_needed
             pass_bots = cp(bots)
             pass_bots['geode'] += 1
-            geodes = buildbot(r, tl-duration, pass_bots, pass_resources)
+            geodes = buildbot(r, tl-duration, pass_bots, pass_res)
             maxgeodes = max(maxgeodes, geodes)
 
     return resources['geode'] + maxgeodes + bots['geode'] * tl
@@ -295,10 +295,15 @@ with open('Day19-Input--Debug', 'r') as file:
 
 print(recipes)
 
+i = 0
+ql = 0
 for r in recipes:
     # recources mined in this round
+    i += 1
     geodes = buildbot(r, minutes, cp(bots), cp(resources)) # cp not needed
     print("Full run", geodes)
+    ql += i * geodes
     maxgeodes = max(maxgeodes, geodes)
 
 print(maxgeodes)
+print(ql)
