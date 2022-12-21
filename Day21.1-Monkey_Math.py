@@ -50,8 +50,8 @@ root does an addition in both example and test
 """
 
 def getsum(a, b):
-    if monkey[a].isdigit():
-        r1 = monkey[a]
+    if a in monkeynum:
+        r1 = monkeynum[a]
     elif monkey[a]['op'] == '+':
         r1 = getsum(monkey[a]['v1'], monkey[a]['v2'])
     elif monkey[a]['op'] == '-':
@@ -61,8 +61,8 @@ def getsum(a, b):
     else:
         r1 = getdiv(monkey[a]['v1'], monkey[a]['v2'])
     
-    if monkey[b].isdigit():
-        r2 = monkey[b]
+    if b in monkeynum:
+        r2 = monkeynum[b]
     elif monkey[b]['op'] == '+':
         r2 = getsum(monkey[b]['v1'], monkey[b]['v2'])
     elif monkey[b]['op'] == '-':
@@ -75,8 +75,8 @@ def getsum(a, b):
     return r1 + r2
 
 def getdiff(a, b):
-    if monkey[a].isdigit():
-        r1 = monkey[a]
+    if a in monkeynum:
+        r1 = monkeynum[a]
     elif monkey[a]['op'] == '+':
         r1 = getsum(monkey[a]['v1'], monkey[a]['v2'])
     elif monkey[a]['op'] == '-':
@@ -86,8 +86,8 @@ def getdiff(a, b):
     else:
         r1 = getdiv(monkey[a]['v1'], monkey[a]['v2'])
     
-    if monkey[b].isdigit():
-        r2 = monkey[b]
+    if b in monkeynum:
+        r2 = monkeynum[b]
     elif monkey[b]['op'] == '+':
         r2 = getsum(monkey[b]['v1'], monkey[b]['v2'])
     elif monkey[b]['op'] == '-':
@@ -100,8 +100,8 @@ def getdiff(a, b):
     return r1 - r2
 
 def getprod(a, b):
-    if monkey[a].isdigit():
-        r1 = monkey[a]
+    if a in monkeynum:
+        r1 = monkeynum[a]
     elif monkey[a]['op'] == '+':
         r1 = getsum(monkey[a]['v1'], monkey[a]['v2'])
     elif monkey[a]['op'] == '-':
@@ -111,8 +111,8 @@ def getprod(a, b):
     else:
         r1 = getdiv(monkey[a]['v1'], monkey[a]['v2'])
     
-    if monkey[b].isdigit():
-        r2 = monkey[b]
+    if b in monkeynum:
+        r2 = monkeynum[b]
     elif monkey[b]['op'] == '+':
         r2 = getsum(monkey[b]['v1'], monkey[b]['v2'])
     elif monkey[b]['op'] == '-':
@@ -125,8 +125,8 @@ def getprod(a, b):
     return r1 * r2
 
 def getdiv(a, b):
-    if monkey[a].isdigit():
-        r1 = monkey[a]
+    if a in monkeynum:
+        r2 = monkeynum[a]
     elif monkey[a]['op'] == '+':
         r1 = getsum(monkey[a]['v1'], monkey[a]['v2'])
     elif monkey[a]['op'] == '-':
@@ -136,8 +136,8 @@ def getdiv(a, b):
     else:
         r1 = getdiv(monkey[a]['v1'], monkey[a]['v2'])
     
-    if monkey[b].isdigit():
-        r2 = monkey[b]
+    if b in monkeynum:
+        r2 = monkeynum[b]
     elif monkey[b]['op'] == '+':
         r2 = getsum(monkey[b]['v1'], monkey[b]['v2'])
     elif monkey[b]['op'] == '-':
@@ -151,22 +151,35 @@ def getdiv(a, b):
 
 
 monkey = {}
+monkeynum = {}
 with open('Day21-Input--Debug', 'r') as file:
     for line in file:
         name, term = line.rstrip().split(':')
-        if term.isdigit():
-            monkey[name]: term
+        print(name, term)
+        if term.strip().isdigit():
+            monkeynum[name] = int(term)
             continue
         elif '+' in term:
+            monkey[name] = {}
+            monkey[name]['op'] = '+'
             a, b = term.split('+')
         elif '-' in term:
+            monkey[name] = {}
+            monkey[name]['op'] = '-'
             a, b = term.split('-')
         elif '*' in term:
+            monkey[name] = {}
+            monkey[name]['op'] = '*'
             a, b = term.split('*')
         else:
+            monkey[name] = {}
+            monkey[name]['op'] = '/'
             a, b = term.split('/')
-        monkey[name]['v1'] = a
-        monkey[name]['v2'] = b
+        monkey[name]['v1'] = a.strip()
+        monkey[name]['v2'] = b.strip()
+
+print(monkey)
+print(monkeynum)
 
 result = getsum(monkey['root']['v1'], monkey['root']['v2'])
 print(result)
