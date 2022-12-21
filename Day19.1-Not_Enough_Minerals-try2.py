@@ -187,21 +187,22 @@ from copy import copy as cp
 
 def buildbot(r,tl, bots, resources):
     "Build any bot if at all possible, recurse."
-    print("Called", tl, bots, resources)
+    #print("Called", tl, bots, resources)
     called_none = True
-    maxgeodes = 0
+    maxgeodes = resources['geode']
     # ore bot (always possible)
     ore_needed = r['ore']['ore']
-    duration = (ore_needed - resources['ore']) // bots['ore'] + 1
-    if (ore_needed - resources['ore']) % bots['ore']:
-        duration += 1
-    if duration < 1:
-        duration = 1
-    if duration < tl:
-        called_none = False
-        pass_res = cp(resources)
+    pass_res = cp(resources)
+    duration = 1
+    while pass_res['ore'] < ore_needed:
         for i in pass_res:
-            pass_res[i] += bots[i] * duration
+            pass_res[i] += bots[i]
+        duration += 1
+    for i in pass_res:
+        pass_res[i] += bots[i]
+    #print("Build ore bot", duration, pass_res)
+    if duration < tl - 1:
+        called_none = False
         pass_res['ore'] -= ore_needed
         pass_bots = cp(bots)
         pass_bots['ore'] += 1
@@ -209,16 +210,16 @@ def buildbot(r,tl, bots, resources):
         maxgeodes = max(maxgeodes, geodes)
     # clay bot (always possible)
     ore_needed = r['clay']['ore']
-    duration = (ore_needed - resources['ore']) // bots['ore'] + 1
-    if (ore_needed - resources['ore']) // bots['ore']:
-        duration += 1
-    if duration < 1:
-        duration = 1
-    if duration < tl:
-        called_none = False
-        pass_res = cp(resources)
+    pass_res = cp(resources)
+    duration = 1
+    while pass_res['ore'] < ore_needed: # bonus round
         for i in pass_res:
-            pass_res[i] += bots[i] * duration
+            pass_res[i] += bots[i]
+        duration += 1
+    for i in pass_res:
+        pass_res[i] += bots[i]
+    if duration < tl - 1:
+        called_none = False
         pass_res['ore'] -= ore_needed
         pass_bots = cp(bots)
         pass_bots['clay'] += 1
@@ -228,20 +229,16 @@ def buildbot(r,tl, bots, resources):
     if bots['clay']:
         ore_needed = r['obsidian']['ore']
         clay_needed = r['obsidian']['clay']
-        d1 = (ore_needed - resources['ore']) // bots['ore'] + 1
-        if (ore_needed - resources['ore']) % bots['ore']:
-            d1 += 1
-        d2 = (clay_needed - resources['clay']) // bots['clay'] + 1
-        if (clay_needed - resources['clay']) % bots['clay']:
-            d2 += 1
-        duration = max(d1, d2)
-        if duration < 1:
-            duration = 1
-        if duration < tl:
-            called_none = False
-            pass_res = cp(resources)
+        pass_res = cp(resources)
+        duration = 1
+        while pass_res['ore'] < ore_needed or pass_res['clay'] < clay_needed:
             for i in pass_res:
-                pass_res[i] += bots[i] * duration
+                pass_res[i] += bots[i]
+            duration += 1
+        for i in pass_res:
+            pass_res[i] += bots[i]
+        if duration < tl - 1:
+            called_none = False
             pass_res['ore'] -= ore_needed
             pass_res['clay'] -= clay_needed
             pass_bots = cp(bots)
@@ -252,20 +249,16 @@ def buildbot(r,tl, bots, resources):
     if bots['obsidian']:
         ore_needed = r['geode']['ore']
         obs_needed = r['geode']['obsidian']
-        d1 = (ore_needed - resources['ore']) // bots['ore'] + 1
-        if (ore_needed - resources['ore']) % bots['ore']:
-            d1 += 1
-        d2 = (obs_needed - resources['obsidian']) // bots['obsidian'] + 1
-        if (obs_needed - resources['obsidian']) % bots['obsidian']:
-            d2 += 1
-        duration = max(d1, d2)
-        if duration < 1:
-            duration = 1
-        if duration < tl:
-            called_none = False
-            pass_res = cp(resources)
+        pass_res = cp(resources)
+        duration = 1
+        while pass_res['ore'] < ore_needed or pass_res['obsidian'] < obs_needed:
             for i in pass_res:
-                pass_res[i] += bots[i] * duration
+                pass_res[i] += bots[i]
+            duration += 1
+        for i in pass_res:
+            pass_res[i] += bots[i]
+        if duration < tl - 1:
+            called_none = False
             pass_res['ore'] -= ore_needed
             pass_res['obsidian'] -= obs_needed
             pass_bots = cp(bots)
