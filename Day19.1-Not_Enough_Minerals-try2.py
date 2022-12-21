@@ -175,67 +175,101 @@ Determine the quality level of each blueprint using the largest number of geodes
 Another recursion. 
 Can be run while reading input. But.
 
-Ore and clay bots use one ingredient, 
-obsidian and geode bots use two.
+Ore and clay bots use one ingredient, ore, 
+obsidian and geode bots use two (ore, clay) and (ore, obsidian) in each recipe.
+
+The attempt at a brute-force recursion takes way to long.
+So now: Save up for any bot whose ingredients are being mined.
+Recurse over bots built.
 """
 
 from copy import copy as cp
 
-def nextminute(r, tl, bots, resources):
-    "Things happening this minute"
-    tl -= 1
-    if tl == 0:
-        return resources['geode']
-    # mining for this round
-    for b in bots:
-        resources[b] += bots[b]
-    # call recursively with each possible bot to build. Or without building.
-    # build nothing
-    geodes = nextminute(r, tl, cp(bots), cp(resources))
-    # build ore bot
-    # this can be done in a for loop, rather than doing it case-by-case, 
-    # taking len(recipe) into account, but keep it simpler for now.
+def buildbot(r,tl, bots, resources):
+    "Build any bot if at all possible, recurse."
+    #can_build = False
     maxgeodes = 0
-    for i in r['ore']:
-        res_needed = r['ore'][i]
-        if resources[i] - bots[i] >= res_needed: # -bots, because they havent mined for this round yet.
-            resources[i] -= res_needed
-            bots['ore'] += 1
-            geodes = nextminute(r, tl, cp(bots), cp(resources))
-            maxgeodes = max(maxgeodes, geodes)
-    # build clay bot
-    for i in r['clay']:
-        res_needed = r['ore'][i]
-        if resources[i] - bots[i] >= res_needed:
-            resources[i] -= res_needed
-            bots['clay'] += 1
-            geodes = nextminute(r, tl, cp(bots), cp(resources))
-            maxgeodes = max(maxgeodes, geodes)
-    # build odidian bot
-    temp = {}
-    for i in r['obsidian']:
-        res_needed = r['obsidian'][i]
-        if resources[i] - bots[i] >= res_needed:
-            temp[i] = res_needed
-    if len(temp) == 2:
-        for i in temp:
-            resources[i] -= temp[i]
-        bots['obsidian'] += 1
-        geodes = nextminute(r, tl, cp(bots), cp(resources))
+    # ore bot (always possible)
+    ore_needed = r['ore']['ore']
+    duration = (ore_needed - resources['ore']) // bots['ore'] + 1
+    if (ore_needed - resources['ore']) % bots['ore']:
+        duration += 1
+    if duration < 1:
+        duration = 1
+    if duration < tl:
+        #can_build = True
+        pass_res = cp(resources)
+        for i in pass_res:
+            pass_res[i] += bots[i] * duration
+        pass_res['ore'] -= ore_needed
+        pass_bots = cp(bots)
+        pass_bots['ore'] += 1
+        geodes = buildbot(r, tl-duration, pass_bots, pass_resources)
         maxgeodes = max(maxgeodes, geodes)
-    # build geode bot
-    temp = {}
-    for i in r['geode']:
-        res_needed = r['geode'][i]
-        if resources[i] - bots[i] >= res_needed:
-            temp[i] = res_needed
-    if len(temp) == 2:
-        for i in temp:
-            resources[i] -= temp[i]
-        bots['geode'] += 1
-        geodes = nextminute(r, tl, cp(bots), cp(resources))
+    # clay bot (always possible)
+    ore_needed = r['ore']['ore']
+    duration = (ore_needed - resources['ore']) // bots['ore'] + 1
+    if (ore_needed - resources['ore']) // bots['ore']:
+        duration += 1
+    if duration < 1:
+        duration = 1
+    if duration < tl:
+        pass_res = cp(resources)
+        for i in pass_res:
+            pass_res[i] += bots[i] * duration
+        pass_res['ore'] -= ore_needed
+        pass_bots = cp(bots)
+        pass_bots['clay'] += 1
+        geodes = buildbot(r,tl-duration, pass_bots, pass_resources)
         maxgeodes = max(maxgeodes, geodes)
-    return maxgeodes
+    # obsidian bot
+    if bots['clay']:
+        ore_needed = r['obsidian']['ore']
+        clay_needed = r['obsidian']['clay']
+        d1 = (ore_needed - resources['ore']) // bots['ore'] + 1
+        if (ore_needed - resources['ore']) % bots['ore']:
+            d1 += 1
+        d2 = (clay_needed - resources['clay']) // bots['clay'] + 1
+        if (clay_needed - resources['clay']) % bots['clay']:
+            d2 += 1
+        duration = max(d1, d2)
+        if duration < 1:
+            duration = 1
+        if duration < tl:
+            pass_res = cp(resources)
+            for i in pass_res:
+                pass_res[i] += bots[i] * duration
+            pass_res['ore'] -= ore_needed
+            pass_res['clay'] -= clay_needed
+            pass_bots = cp(bots)
+            pass_bots['obsidian'] += 1
+            geodes = buildbot(r, tl-duration, pass_bots, pass_resources)
+            maxgeodes = max(maxgeodes, geodes)
+    # geode bot
+    if bots['obsidian']:
+        ore_needed = r['geode']['ore']
+        obs_needed = r['geode']['obsidian']
+        d1 = (ore_needed - resources['ore']) // bots['ore'] + 1
+        if (ore_needed - resources['ore']) % bots['ore']:
+            d1 += 1
+        d2 = (obs_needed - resources['obsidian']) // bots['obsidian'] + 1
+        if (obs_needed - resources['obsidian']) % bots['obsidian']:
+            d2 += 1
+        duration = max(d1, d2)
+        if duration < 1:
+            duration = 1
+        if duration < tl:
+            pass_res = cp(resources)
+            for i in pass_res:
+                pass_res[i] += bots[i] * duration
+            pass_res['ore'] -= ore_needed
+            pass_res['obsidian'] -= obs_needed
+            pass_bots = cp(bots)
+            pass_bots['geode'] += 1
+            geodes = buildbot(r, tl-duration, pass_bots, pass_resources)
+            maxgeodes = max(maxgeodes, geodes)
+
+    return resources['geode'] + maxgeodes + bots['geode'] * tl
 
 
 minutes = 24
@@ -243,11 +277,11 @@ bots = { 'ore': 1, 'clay': 0, 'obsidian': 0, 'geode': 0}
 resources = { 'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
 
 recipes = []
-recipe = {}
 maxgeodes = 0
 
 with open('Day19-Input--Debug', 'r') as file:
     for line in file:
+        recipe = {}
         blueprint, line = line.rstrip('.\n').split(':')
         blueprint = blueprint[-1]
         for item in line.split('.'):
@@ -263,7 +297,7 @@ print(recipes)
 
 for r in recipes:
     # recources mined in this round
-    geodes = nextminute(r, minutes, cp(bots), cp(resources)) # cp not needed
+    geodes = buildbot(r, minutes, cp(bots), cp(resources)) # cp not needed
     print("Full run", geodes)
     maxgeodes = max(maxgeodes, geodes)
 
