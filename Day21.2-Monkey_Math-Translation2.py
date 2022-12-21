@@ -61,6 +61,11 @@ In the above example, the number you need to yell to pass root's equality test i
 What number do you yell to pass root's equality test?
 """
 
+"""
+This needs some interval checkery and smarts.
+I cheesed it :)
+"""
+
 def getsum(a, b):
     if a in monkeynum:
         r1 = monkeynum[a]
@@ -193,14 +198,16 @@ with open('Day21-Input', 'r') as file:
 print(monkey)
 print(monkeynum)
 monkeynum['dummy'] = 0
-humn = 0
+r2 = getsum(monkey['root']['v2'], 'dummy')
+humn = 3876907000000 
 while True:
     monkeynum['humn'] = humn
     r1 = getsum(monkey['root']['v1'], 'dummy')
-    r2 = getsum(monkey['root']['v2'], 'dummy')
-    print(r1, r2)
+    print(humn, r1, r2)
     if r1 == r2:
         break
     humn += 1
 
 print(humn)
+
+# 3876907167495
