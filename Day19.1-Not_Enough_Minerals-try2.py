@@ -257,7 +257,7 @@ def buildbot(r,tl, bots, resources):
             duration += 1
         for i in pass_res:
             pass_res[i] += bots[i]
-        if duration < tl - 1:
+        if duration < tl:   # exception for geode bot, otherwise -1 possible
             called_none = False
             pass_res['ore'] -= ore_needed
             pass_res['obsidian'] -= obs_needed
@@ -300,9 +300,11 @@ ql = 0
 for r in recipes:
     i += 1
     geodes = buildbot(r, minutes, cp(bots), cp(resources)) # cp not needed
-    print("Full run", geodes)
     ql += i * geodes
+    print("Full run", i, geodes, ql)
     maxgeodes = max(maxgeodes, geodes)
 
 print(maxgeodes)
 print(ql)
+
+# 1343 is too low.
