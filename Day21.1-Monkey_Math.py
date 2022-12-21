@@ -152,7 +152,7 @@ def getdiv(a, b):
 
 monkey = {}
 monkeynum = {}
-with open('Day21-Input--Debug', 'r') as file:
+with open('Day21-Input', 'r') as file:
     for line in file:
         name, term = line.rstrip().split(':')
         print(name, term)
