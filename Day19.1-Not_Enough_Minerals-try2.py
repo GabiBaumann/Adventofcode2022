@@ -187,7 +187,8 @@ from copy import copy as cp
 
 def buildbot(r,tl, bots, resources):
     "Build any bot if at all possible, recurse."
-    #can_build = False
+    #print("Called", tl, bots, resources)
+    called_none = True
     maxgeodes = 0
     # ore bot (always possible)
     ore_needed = r['ore']['ore']
@@ -197,7 +198,7 @@ def buildbot(r,tl, bots, resources):
     if duration < 1:
         duration = 1
     if duration < tl:
-        #can_build = True
+        called_none = False
         pass_res = cp(resources)
         for i in pass_res:
             pass_res[i] += bots[i] * duration
@@ -207,13 +208,14 @@ def buildbot(r,tl, bots, resources):
         geodes = buildbot(r, tl-duration, pass_bots, pass_res)
         maxgeodes = max(maxgeodes, geodes)
     # clay bot (always possible)
-    ore_needed = r['ore']['ore']
+    ore_needed = r['clay']['ore']
     duration = (ore_needed - resources['ore']) // bots['ore'] + 1
     if (ore_needed - resources['ore']) // bots['ore']:
         duration += 1
     if duration < 1:
         duration = 1
     if duration < tl:
+        called_none = False
         pass_res = cp(resources)
         for i in pass_res:
             pass_res[i] += bots[i] * duration
@@ -236,6 +238,7 @@ def buildbot(r,tl, bots, resources):
         if duration < 1:
             duration = 1
         if duration < tl:
+            called_none = False
             pass_res = cp(resources)
             for i in pass_res:
                 pass_res[i] += bots[i] * duration
@@ -259,6 +262,7 @@ def buildbot(r,tl, bots, resources):
         if duration < 1:
             duration = 1
         if duration < tl:
+            called_none = False
             pass_res = cp(resources)
             for i in pass_res:
                 pass_res[i] += bots[i] * duration
@@ -269,7 +273,10 @@ def buildbot(r,tl, bots, resources):
             geodes = buildbot(r, tl-duration, pass_bots, pass_res)
             maxgeodes = max(maxgeodes, geodes)
 
-    return resources['geode'] + maxgeodes + bots['geode'] * tl
+    if called_none:
+        return resources['geode'] + bots['geode'] * tl
+    else:
+        return maxgeodes
 
 
 minutes = 24
