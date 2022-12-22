@@ -516,15 +516,11 @@ prod_geodes = 1
 for r in recipes:
     i += 1
     maxore = 0
-    maxclay = 0
-    maxobs = 0
     for i in r:
         ore = r[i]['ore']
-        clay = r[i]['clay']
-        obs = r[i]['obsidian']
         maxore = max(maxore, ore)
-        maxclay = max(maxclay, clay)
-        maxobs = max(maxobs, obs)
+    maxclay = r['obsidian']['clay']
+    maxobs = r['geode']['obsidian']
     print('Maxes:', maxore, maxclay, maxobs)
     geodes = buildbot(r, minutes, cp(bots), cp(resources)) # cp not needed
     prod_geodes *= geodes
