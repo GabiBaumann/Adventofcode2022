@@ -80,10 +80,136 @@ Follow the path given in the monkeys' notes. What is the final password?
 """
 
 initmap = []
-
+move = []
+direction = []
+minx = {}
+maxx = {}
+miny = {}
+maxy = {}
+count = 0
 with open('Day22-Input--Debug', 'r') as file:
     for line in file:
         if line[0].isdigit():
-            instrucions = line.rstrip()
+            n = ''
+            for char in line:
+                if char.isdigit():
+                    n += char
+                else:
+                    move.append(int(n))
+                    direction.append(char)
+                    n = ''
+            direction.pop()
         if line[0] in ' .#':
-            initmap.append(line.rstrip())
+            #initmap.append([])
+            for i in range(len(line)):
+                if line[i] != ' ':
+                    minx[count] = i
+                    break
+            for j in range(len(line)-1, i, -1):
+                if line[j] != ' ':
+                    maxx[count] = j
+                    break
+            initmap.append(line.rstrip('\n'))
+            count += 1
+
+for x in range(len(initmap[0])):
+    for y in range(len(initmap)):
+        if initmap[y][x] != ' ':
+            miny[x] = y
+            break
+    for ym in range(len(initmap)-1, y, -1):
+        if initmap[ym][x] != ' ':
+            maxy[x] = ym
+            break
+
+print(move)
+print(direction)
+print(minx)
+print(maxx)
+print(miny)
+print(maxy)
+
+face = 'r'
+posy = 0
+posx = minx[posy] # not quite correct. first free tile is to be used. but.
+
+for count in range(len(move)):
+    mv = move[count]
+    if face == 'r':
+        for step in range(mv):
+            if posx + 1 == maxx[posy]:
+                if initmap[posy][minx[posy]] == '.':
+                    posx = minx[posy]
+                else:
+                    break
+            elif initmap[posy][posx+1] == '#':
+                break
+            else:
+                posx += 1
+    elif face == 'l':
+        for step in range(mv):
+            if posx - 1 < minx[posy]:
+                if initmap[posy][maxx[posy]-1] == '.':
+                    posx = maxx[posy] - 1
+                else:
+                    break
+            elif initmap[posy][posx-1] == '#':
+                break
+            else:
+                posx -= 1
+    elif face == 'd':
+        for step in range(mv):
+            if posy + 1 == maxy[posx]:
+                if initmap[miny[posx]][posx] == '.':
+                    posy = miny[posx]
+                else:
+                    break
+            elif initmap[posy+1][posx] == '#':
+                break
+            else:
+                posy += 1
+    elif face == 'u':
+        for step in range(mv):
+            if posy - 1 == miny[posx]:
+                if initmap[maxy[posx]][posx] == '.':
+                    posy = maxy[posx] - 1
+                else:
+                    break
+                posy = maxy[posx] - 1
+            elif initmap[posy-1][posx] == '#':
+                break
+            else:
+                posy -= 1
+    if count == len(direction):
+        break
+    turn = direction[count]
+    if turn == 'L':
+        if face == 'r':
+            face = 'u'
+        elif face == 'u':
+            face = 'l'
+        elif face == 'l':
+            face = 'd'
+        else:
+            face = 'r'
+    else:
+        if face == 'r':
+            face = 'd'
+        elif face == 'd':
+            face = 'l'
+        elif face == 'l':
+            face = 'u'
+        else:
+            face = 'r'
+
+if face == 'r':
+    fp = 0
+elif face == 'd':
+    fp = 1
+elif face == 'l':
+    fp = 2
+else:
+    fp = 3
+
+print(posy, posx, face)
+print( (posy+1) * 1000 + (posx+1) * 4 + fp )
