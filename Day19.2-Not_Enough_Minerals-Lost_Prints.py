@@ -487,8 +487,8 @@ resources = { 'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
 
 recipes = []
 
-with open('Day19-Input--Debug', 'r') as file:
-#with open('Day19-Input', 'r') as file:
+#with open('Day19-Input--Debug', 'r') as file:
+with open('Day19-Input', 'r') as file:
     for line in file:
         recipe = {}
         blueprint, line = line.rstrip('.\n').split(':')
