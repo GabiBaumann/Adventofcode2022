@@ -489,8 +489,8 @@ resources = { 'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
 
 recipes = []
 
-with open('Day19-Input--Debug', 'r') as file:
-#with open('Day19-Input', 'r') as file:
+#with open('Day19-Input--Debug', 'r') as file:
+with open('Day19-Input', 'r') as file:
     for line in file:
         recipe = {}
         blueprint, line = line.rstrip('.\n').split(':')
@@ -515,10 +515,10 @@ prod_geodes = 1
 
 for r in recipes:
     i += 1
-    maxore = 0
-    for i in r:
-        ore = r[i]['ore']
-        maxore = max(maxore, ore)
+    ore1 = r['clay']['ore']
+    ore2 = r['obsidian']['ore']
+    ore3 = r['geode']['ore']
+    maxore = max(ore1, ore2, ore3)
     maxclay = r['obsidian']['clay']
     maxobs = r['geode']['obsidian']
     print('Maxes:', maxore, maxclay, maxobs)
@@ -529,4 +529,20 @@ for r in recipes:
 
 print(ql)
 print(prod_geodes)
+
+# input:
+"""
+Maxes: 2 17 10
+Full run 1 54 54 54
+Maxes: 4 15 8
+Full run 2 23 100 1242
+Maxes: 3 16 18
+Full run 3 15 145 18630
+145
+18630
+"""
+
+# example:
+"""
+"""
 
