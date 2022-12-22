@@ -87,14 +87,14 @@ maxx = {}
 miny = {}
 maxy = {}
 prev_minx = 10000
-for i in range(250):
+for i in range(150):
     miny[i] = 10000
 count = 0
 
-with open('Day22-Input--Debug', 'r') as file:
-#with open('Day22-Input', 'r') as file:
+#with open('Day22-Input--Debug', 'r') as file:
+with open('Day22-Input', 'r') as file:
     for line in file:
-        print(len(line))
+        #print(len(line))
         if line[0].isdigit():
             n = ''
             for char in line:
@@ -116,8 +116,8 @@ with open('Day22-Input--Debug', 'r') as file:
                     break
             for i in range(minx[count], maxx[count]):
                 miny[i] = min(miny[i], count)
-            if count and len(line) < len(initmap[-1]):
-                for i in range(len(line), len(initmap[-1])):
+            if count and len(line) - 1 < len(initmap[-1]):
+                for i in range(len(line)-1, len(initmap[-1])):
                     maxy[i] = count
             if minx[count] > prev_minx:
                 for i in range(prev_minx, minx[count]):
@@ -130,21 +130,6 @@ with open('Day22-Input--Debug', 'r') as file:
 for i in range(len(initmap[-1])):
     if initmap[-1][i] != ' ':
         maxy[i] = len(initmap)
-
-#print(len(initmap[0]))
-#print()
-#for x in range(len(initmap[0])):
-#    for y in range(len(initmap)):
-#        if initmap[y][x] != ' ':
-#            miny[x] = y
-#            break
-#    for ym in range(y, len(initmap)-1):
-#        if x >= len(initmap[ym]):
-#            maxy[x] = ym
-#            break
-#        elif initmap[ym][x] == ' ':
-#            maxy[x] = ym
-#            break
 
 print(move)
 print(direction)
@@ -194,8 +179,9 @@ for count in range(len(move)):
                 posy += 1
     elif face == 'u':
         for step in range(mv):
-            if posy - 1 == miny[posx]:
-                if initmap[maxy[posx]][posx] == '.':
+            if posy - 1 < miny[posx]:
+                print("Moving up, wrap", posx, miny[posx], maxy[posx])
+                if initmap[maxy[posx]-1][posx] == '.':
                     posy = maxy[posx] - 1
                 else:
                     break
@@ -239,3 +225,4 @@ print(posy, posx, face)
 print( (posy+1) * 1000 + (posx+1) * 4 + fp )
 
 # Example: 6032
+# Input: 131052 (130, 12, r)
