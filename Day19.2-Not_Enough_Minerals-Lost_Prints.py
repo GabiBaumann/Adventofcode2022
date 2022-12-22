@@ -400,42 +400,44 @@ def buildbot(r,tl, bots, resources):
     called_none = True
     maxgeodes = resources['geode']
     # ore bot (always possible)
-    ore_needed = r['ore']['ore']
-    pass_res = cp(resources)
-    duration = 1
-    while pass_res['ore'] < ore_needed:
+    if bots['ore'] < maxore:
+        ore_needed = r['ore']['ore']
+        pass_res = cp(resources)
+        duration = 1
+        while pass_res['ore'] < ore_needed:
+            for i in pass_res:
+                pass_res[i] += bots[i]
+            duration += 1
         for i in pass_res:
             pass_res[i] += bots[i]
-        duration += 1
-    for i in pass_res:
-        pass_res[i] += bots[i]
-    #print("Build ore bot", duration, pass_res)
-    if duration < tl - 1:
-        called_none = False
-        pass_res['ore'] -= ore_needed
-        pass_bots = cp(bots)
-        pass_bots['ore'] += 1
-        geodes = buildbot(r, tl-duration, pass_bots, pass_res)
-        maxgeodes = max(maxgeodes, geodes)
+        #print("Build ore bot", duration, pass_res)
+        if duration < tl - 1:
+            called_none = False
+            pass_res['ore'] -= ore_needed
+            pass_bots = cp(bots)
+            pass_bots['ore'] += 1
+            geodes = buildbot(r, tl-duration, pass_bots, pass_res)
+            maxgeodes = max(maxgeodes, geodes)
     # clay bot (always possible)
-    ore_needed = r['clay']['ore']
-    pass_res = cp(resources)
-    duration = 1
-    while pass_res['ore'] < ore_needed: # bonus round
+    if bots['clay'] < maxclay:
+        ore_needed = r['clay']['ore']
+        pass_res = cp(resources)
+        duration = 1
+        while pass_res['ore'] < ore_needed: # bonus round
+            for i in pass_res:
+                pass_res[i] += bots[i]
+            duration += 1
         for i in pass_res:
             pass_res[i] += bots[i]
-        duration += 1
-    for i in pass_res:
-        pass_res[i] += bots[i]
-    if duration < tl - 1:
-        called_none = False
-        pass_res['ore'] -= ore_needed
-        pass_bots = cp(bots)
-        pass_bots['clay'] += 1
-        geodes = buildbot(r,tl-duration, pass_bots, pass_res)
-        maxgeodes = max(maxgeodes, geodes)
+        if duration < tl - 1:
+            called_none = False
+            pass_res['ore'] -= ore_needed
+            pass_bots = cp(bots)
+            pass_bots['clay'] += 1
+            geodes = buildbot(r,tl-duration, pass_bots, pass_res)
+            maxgeodes = max(maxgeodes, geodes)
     # obsidian bot
-    if bots['clay']:
+    if bots['clay'] and bots['obsidian'] < maxobs:
         ore_needed = r['obsidian']['ore']
         clay_needed = r['obsidian']['clay']
         pass_res = cp(resources)
@@ -487,8 +489,8 @@ resources = { 'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
 
 recipes = []
 
-#with open('Day19-Input--Debug', 'r') as file:
-with open('Day19-Input', 'r') as file:
+with open('Day19-Input--Debug', 'r') as file:
+#with open('Day19-Input', 'r') as file:
     for line in file:
         recipe = {}
         blueprint, line = line.rstrip('.\n').split(':')
@@ -506,12 +508,23 @@ with open('Day19-Input', 'r') as file:
 
 print(recipes)
 
+
 i = 0
 ql = 0
 prod_geodes = 1
 
 for r in recipes:
     i += 1
+    maxore = 0
+    maxclay = 0
+    maxobs = 0
+    for i in r:
+        ore = r[i]['ore']
+        clay = r[i]['clay']
+        obs = r[i]['obsidian']
+        maxore = max(maxore, ore)
+        maxclay = max(maxclay, clay)
+        maxobs = max(maxobs, obs)
     geodes = buildbot(r, minutes, cp(bots), cp(resources)) # cp not needed
     prod_geodes *= geodes
     ql += i * geodes
