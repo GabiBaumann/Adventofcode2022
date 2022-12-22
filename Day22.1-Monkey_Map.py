@@ -86,9 +86,15 @@ minx = {}
 maxx = {}
 miny = {}
 maxy = {}
+prev_minx = 10000
+for i in range(250):
+    miny[i] = 10000
 count = 0
+
 with open('Day22-Input--Debug', 'r') as file:
+#with open('Day22-Input', 'r') as file:
     for line in file:
+        print(len(line))
         if line[0].isdigit():
             n = ''
             for char in line:
@@ -100,7 +106,6 @@ with open('Day22-Input--Debug', 'r') as file:
                     n = ''
             direction.pop()
         if line[0] in ' .#':
-            #initmap.append([])
             for i in range(len(line)):
                 if line[i] != ' ':
                     minx[count] = i
@@ -109,18 +114,37 @@ with open('Day22-Input--Debug', 'r') as file:
                 if line[j] != ' ':
                     maxx[count] = j
                     break
+            for i in range(minx[count], maxx[count]):
+                miny[i] = min(miny[i], count)
+            if count and len(line) < len(initmap[-1]):
+                for i in range(len(line), len(initmap[-1])):
+                    maxy[i] = count
+            if minx[count] > prev_minx:
+                for i in range(prev_minx, minx[count]):
+                    maxy[i] = count
+                               
             initmap.append(line.rstrip('\n'))
+            prev_minx = minx[count]
             count += 1
 
-for x in range(len(initmap[0])):
-    for y in range(len(initmap)):
-        if initmap[y][x] != ' ':
-            miny[x] = y
-            break
-    for ym in range(len(initmap)-1, y, -1):
-        if initmap[ym][x] != ' ':
-            maxy[x] = ym
-            break
+for i in range(len(initmap[-1])):
+    if initmap[-1][i] != ' ':
+        maxy[i] = len(initmap)
+
+#print(len(initmap[0]))
+#print()
+#for x in range(len(initmap[0])):
+#    for y in range(len(initmap)):
+#        if initmap[y][x] != ' ':
+#            miny[x] = y
+#            break
+#    for ym in range(y, len(initmap)-1):
+#        if x >= len(initmap[ym]):
+#            maxy[x] = ym
+#            break
+#        elif initmap[ym][x] == ' ':
+#            maxy[x] = ym
+#            break
 
 print(move)
 print(direction)
@@ -213,3 +237,5 @@ else:
 
 print(posy, posx, face)
 print( (posy+1) * 1000 + (posx+1) * 4 + fp )
+
+# Example: 6032
