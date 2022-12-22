@@ -525,6 +525,7 @@ for r in recipes:
         maxore = max(maxore, ore)
         maxclay = max(maxclay, clay)
         maxobs = max(maxobs, obs)
+    print('Maxes:', maxore, maxclay, maxobs)
     geodes = buildbot(r, minutes, cp(bots), cp(resources)) # cp not needed
     prod_geodes *= geodes
     ql += i * geodes
