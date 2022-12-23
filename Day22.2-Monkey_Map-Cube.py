@@ -207,6 +207,19 @@ to y= 150-199, x=49 (moving left)
 Wrap v
 x=0-49, y= 199 (moving down)
 to x=100-149, y=0 (moving down)
+
+
+I guess this can be done with algorithmic understanding of
+cube topology giving a general solution,
+to solve the example.
+Transform into x/y/z coordinates, 
+switching move in x dir on x/y plane to z motion on z/y plne?
+Matrix transform to turn-on-wrap? Ewww...
+
+So just go ahead and handle each wrap by the rules above...
+When appending to list on wrap, that may not hurt too much.
+Prolly start with modification to pop any action instruction from 0
+and while loops instead of for loops.
 """
 
 initmap = []
