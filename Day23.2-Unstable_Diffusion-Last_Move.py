@@ -280,7 +280,6 @@ def move_elf(x, y):
             nextgrid[y][x] = ''
             break
         elif check_dir == 'd':
-            print("Debug, d", x, y)
             if grid[y+1][x-1] or grid[y+1][x] or grid[y+1][x+1]:
                 continue
             elif grid[y+2][x]: 
@@ -315,7 +314,7 @@ def move_elf(x, y):
             break
 
 
-offset = 10
+offset = 70
 no_elfs = 0
 
 rule = [ 'u', 'd', 'l', 'r' ]
@@ -323,8 +322,8 @@ grid = []
 for i in range(offset):
     grid.append([])
 
-with open('Day23-Input--Debug', 'r') as file:
-#with open('Day23-Input', 'r') as file:
+#with open('Day23-Input--Debug', 'r') as file:
+with open('Day23-Input', 'r') as file:
     y = 0
     for line in file:
         l = []
@@ -394,6 +393,10 @@ for y in range(len(grid)):
 
 print(minx, miny, maxx, maxy, no_elfs)
 print((1+maxy-miny) * (1+maxx-minx) - no_elfs)
+
+## Part 2:
+# 1065
+# example is 20. Fine.
 
 ## Part 1:
 # 4165 is too high
