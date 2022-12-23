@@ -309,8 +309,8 @@ grid = []
 for i in range(offset):
     grid.append([])
 
-with open('Day23-Input--Debug', 'r') as file:
-#with open('Day23-Input', 'r') as file:
+#with open('Day23-Input--Debug', 'r') as file:
+with open('Day23-Input', 'r') as file:
     y = 0
     for line in file:
         l = []
@@ -381,6 +381,7 @@ print((1+maxy-miny) * (1+maxx-minx) - no_elfs)
 
 ## mööp.
 # 4165 is too high
+# 4082 is right!
 
 # example is right:
 # 110
