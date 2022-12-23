@@ -211,25 +211,115 @@ Record the elves into a x/y 2dim list. Perhaps offset by 10 to allow any movemen
 
 Conflict can only happen if there's an elf two squares in the direction of travel chosen. Keep tabs of conflicts, if second elf in a conflict moves towards first elf, undo first elf move, don't do second elves move.
 
+Nope. While each elf can only cause one conflict, it may be target to two of them. Multiple resets are no good. Wait: reset it to its pos recorded in cs (conflict source) will do.
+
+Nope again. Tests of elfs further down the line go wrong if elf did move.
+Really need to have a copy of the grid, do (and undo) all moves there,
+replace original with copy when done.
+
 Instead of switching choice of directions, the map could be transformed. (180 degrees, 90 degrees clockwise, 180 degrees, 90 degrees clockwise...)
 
 After 10 steps, rectangle is defined by minx, miny, maxx, maxy of elves positions. Sub total number of elves.
+
+Todo: make grids consist of False/True rather than ''/'#'
 """
+
+from copy import deepcopy as cp
+
+def move_elf(x, y):
+    avoid = []
+    resetelf = []
+    for i in range(len(ct)):
+        print(i, len(ct), "conflict list debug")
+        if (x, y) == ct[i]:
+            print(x,y, cdir[i], 'in conflict list')
+            avoid.append(cdir[i])
+            resetelf.append(cs[i])
+            # optional, should be faster.
+            #cs.pop(i)
+            #ct.pop(i)
+            #cdir.pop(i)
+    for check_dir in rc:
+        if check_dir == 'u':
+            if 'u' in avoid:
+                # this move conflics. don't move,
+                # reset origin elf, which has moved down.
+                for i in range(len(avoid)):
+                    if avoid[i] == 'u':
+                        a, b = resetelf[i][0], resetelf[i][1]
+                        nextgrid[b+1][a] = ''
+                        nextgrid[b][a] = '#'
+                break
+            elif grid[y-1][x-1] == '#' or grid[y-1][x] == '#' or grid[y-1][x+1] == '#':
+                continue
+            # the move
+            print("moving up", x, y)
+            nextgrid[y-1][x] = '#'
+            nextgrid[y][x] = ''
+            break
+        elif check_dir == 'd':
+            print("Debug, d", x, y)
+            if grid[y+1][x-1] or grid[y+1][x] or grid[y+1][x+1]:
+                continue
+            elif grid[y+2][x]: 
+                cs.append((x,y))
+                ct.append((x,y+2))
+                cdir.append('u')
+            # move
+            print("moving down", x,y)
+            nextgrid[y+1][x] = '#'
+            nextgrid[y][x] = ''
+            break
+        elif check_dir == 'l':
+            if 'l' in avoid:
+                for i in range(len(avoid)):
+                    if avoid[i] == 'l':
+                        a, b = resetelf[i][0], resetelf[i][1]
+                        nextgrid[b][a+1] = ''
+                        nextgrid[b][a] = '#'
+                break
+            elif grid[y-1][x-1] or grid[y][x-1] or grid[y+1][x-1]:
+                continue
+            # move
+            print('moving left', x,y)
+            nextgrid[y][x-1] = '#'
+            nextgrid[y][x] = ''
+            break
+        elif check_dir == 'r':
+            if grid[y-1][x+1] or grid[y][x+1] or grid[y+1][x+1]:
+                continue
+            elif grid[y][x+2]:
+                cs.append((x,y))
+                ct.append((x+2,y))
+                cdir.append('l')
+            # move
+            print('moving right', x,y)
+            nextgrid[y][x+1] = '#'
+            nextgrid[y][x] = ''
+            break
 
 
 offset = 10
+no_elfs = 0
+
+rule = [ 'u', 'd', 'l', 'r' ]
 grid = []
 for i in range(offset):
     grid.append([])
 
 with open('Day23-Input--Debug', 'r') as file:
+#with open('Day23-Input', 'r') as file:
     y = 0
-    l = []
     for line in file:
+        l = []
         for i in range(offset):
             l.append('')
         for char in line.rstrip():
-            l.append(char.replace('.', ''))
+            if char == '#':
+                l.append(char)
+                no_elfs += 1
+            else:
+                l.append('')
         for i in range(offset):
             l.append('')
         grid.append(l)
@@ -237,11 +327,60 @@ with open('Day23-Input--Debug', 'r') as file:
 
 for i in range(offset):
     grid.append([])
-    for j in range(len(grid[11])):
+    for j in range(len(grid[offset+1])):
         grid[i].append('')
         grid[-1].append('')
 
-print(grid)
+print(no_elfs, "elfs on the grid.")
+#print(grid)
+for i in range(len(grid)):
+    print(len(grid[i]), grid[i])
+for i in range(len(grid)):
+    o=''
+    for j in range(len(grid[0])):
+        o = o + grid[i][j].replace('', '.').replace('.#.', '#')
+    print(o)
 
+#for count in range(10):
+for count in range(2):
+    rc = [rule[count%4],rule[(count+1)%4],rule[(count+2)%4],rule[(count+3)%4]]
+    print('Ruleset:', rc)
+    nextgrid = cp(grid)
+    cs = []
+    ct = []
+    cdir = [] # all these should be auto-empty, but this anchors to global.
+    for y in range(len(grid)):
+        for x in range(len(grid[0])):
+            if grid[y][x]:
+                move_elf(x, y) # rc and conflict lists are global
+    grid = cp(nextgrid)
+    for i in range(len(grid)):
+        o=''
+        for j in range(len(grid[0])):
+            o += grid[i][j].replace('', '.').replace('.#.', '#')
+        print(o)
+# Main loop done.
 
+# get min/max x/y
+miny = len(grid)
+maxy = 0
+minx = len(grid[0])
+maxx = 0
 
+for y in range(len(grid)):
+    for x in range(len(grid[0])):
+        if grid[y][x]:
+            miny = min(miny, y)
+            maxy = max(maxy, y)
+            minx = min(minx, x)
+            maxx = max(maxx, x)
+
+print(minx, miny, maxx, maxy, no_elfs)
+print((2+maxy-miny) * (2+maxx-minx) - no_elfs)
+
+## mööp.
+# 4165 is too high
+
+# example is right:
+# 110
+# but elf distribution goes wrong in round 2
