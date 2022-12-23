@@ -217,3 +217,31 @@ After 10 steps, rectangle is defined by minx, miny, maxx, maxy of elves position
 """
 
 
+offset = 10
+grid = []
+for i in range(offset):
+    grid.append([])
+
+with open('Day23-Input--Debug', 'r') as file:
+    y = 0
+    l = []
+    for line in file:
+        for i in range(offset):
+            l.append('')
+        for char in line.rstrip():
+            l.append(char.replace('.', ''))
+        for i in range(offset):
+            l.append('')
+        grid.append(l)
+        y += 1
+
+for i in range(offset):
+    grid.append([])
+    for j in range(len(grid[11])):
+        grid[i].append('')
+        grid[-1].append('')
+
+print(grid)
+
+
+
