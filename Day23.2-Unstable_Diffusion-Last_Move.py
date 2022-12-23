@@ -323,8 +323,8 @@ grid = []
 for i in range(offset):
     grid.append([])
 
-#with open('Day23-Input--Debug', 'r') as file:
-with open('Day23-Input', 'r') as file:
+with open('Day23-Input--Debug', 'r') as file:
+#with open('Day23-Input', 'r') as file:
     y = 0
     for line in file:
         l = []
@@ -356,7 +356,8 @@ for i in range(len(grid)):
         o = o + grid[i][j].replace('', '.').replace('.#.', '#')
     print(o)
 
-for count in range(10):
+## main loop
+for count in range(10000):
     rc = [rule[count%4],rule[(count+1)%4],rule[(count+2)%4],rule[(count+3)%4]]
     print('Ruleset:', rc)
     nextgrid = cp(grid)
@@ -367,12 +368,16 @@ for count in range(10):
         for x in range(len(grid[0])):
             if grid[y][x] and (grid[y-1][x-1] or grid[y-1][x] or grid[y-1][x+1] or grid[y][x-1] or grid[y][x+1] or grid[y+1][x-1] or grid[y+1][x] or grid[y+1][x+1]):
                 move_elf(x, y) # rc and conflict lists are global
-    grid = cp(nextgrid)
     for i in range(len(grid)):
         o=''
         for j in range(len(grid[0])):
-            o += grid[i][j].replace('', '.').replace('.#.', '#')
+            o += nextgrid[i][j].replace('', '.').replace('.#.', '#')
         print(o)
+    if grid == nextgrid:
+        break
+    grid = cp(nextgrid)
+
+print("Part 2 solution:", count+1)
 
 miny = len(grid)
 maxy = 0
