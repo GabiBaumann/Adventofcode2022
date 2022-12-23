@@ -284,55 +284,163 @@ print(maxy)
 face = 'r'
 posy = 0
 posx = minx[posy] # not quite correct. first free tile is to be used. but.
+count = 0
 
-for count in range(len(move)):
+while count < len(move):
+    continue_move = False
     mv = move[count]
     if face == 'r':
+        print('Debug: Moving r', count, posx, posy, mv, face)
         for step in range(mv):
             if posx + 1 == maxx[posy]:
-                if initmap[posy][minx[posy]] == '.':
-                    posx = minx[posy]
-                else:
-                    break
+                if 0 <= posy < 50:
+                    # continue at y: 149 - posy, x: 99 face: l (B)
+                    # if there's no wall.
+                    if initmap[149-posy][99] == '.':
+                        posy = 149 - posy
+                        posx = 99
+                        face = 'l'
+                        move[count] = mv - (step + 1)
+                        # count -= 1 ## not needed, increment skipped by continue
+                        continue_move = True # to skip direction...
+                elif 50 <= posy < 100:
+                    # continue at y: 49, x = posy + 50, face: 'u' (A)
+                    if initmap[49][posy+50] == '.':
+                        posx = posy + 50
+                        posy = 49
+                        face = 'u'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                elif 100 <= posy < 150:
+                    # continue at y: 149-posy, x:149, face: l (B)
+                    if initmap[149-posy][149] == '.':
+                        posy = 149 - posy
+                        posx = 149
+                        face = 'l'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                elif 150 <= posy < 200:
+                    # continue at y: 149, x: posy - 100, face: u (E)
+                    if initmap[149][posy-100] == '.':
+                        posx = posy - 100
+                        posy = 149
+                        face = 'u'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                break
             elif initmap[posy][posx+1] == '#':
                 break
             else:
                 posx += 1
     elif face == 'l':
+        print('Debug: Moving l', count, posx, posy, mv, face, minx[posy])
         for step in range(mv):
             if posx - 1 < minx[posy]:
-                if initmap[posy][maxx[posy]-1] == '.':
-                    posx = maxx[posy] - 1
-                else:
-                    break
+                if 0 <= posy < 50:
+                    # continue at y: 149 - posy, x: 0, face: r (D)
+                    if initmap[149-posy][0] == '.':
+                        posy = 149 - posy
+                        posx = 0
+                        face = 'r'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                elif 50 <= posy < 100:
+                    # continue at y: 100 , x: posy - 50 , face: d  (C)
+                    if initmap[100][posy-50] == '.':
+                        posx = posy - 50
+                        posy = 100
+                        face = 'd'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                elif 100 <= posy < 150:
+                    # continue at y: 149 - posy, x: 50, face: r (D)
+                    if initmap[149-posy][50] == '.':
+                        posy = 149 - posy
+                        posx = 50
+                        face = 'r'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                elif 150 <= posy < 200:
+                    # continue at y: 0, x: posy - 100, face: d  (F)
+                    if initmap[0][posy-100] == '.':
+                        posx = posy - 100
+                        posy = 0
+                        face = 'd'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                break
             elif initmap[posy][posx-1] == '#':
                 break
             else:
                 posx -= 1
     elif face == 'd':
+        print('Debug: Moving d', count, posx, posy, mv, face)
         for step in range(mv):
             if posy + 1 == maxy[posx]:
-                if initmap[miny[posx]][posx] == '.':
-                    posy = miny[posx]
-                else:
-                    break
+                if 0 <= posx < 50:
+                    # continue at y: 0, x: posx + 100 , face: d (G)
+                    # direction remains, just set x, y and continue move
+                    if initmap[0][posx+100] == '.':
+                        posy = 0
+                        posx = posx + 100
+                        continue_move = False  #Required??
+                        continue
+                elif 50 <= posx < 100:
+                    # continue at y: posx + 100, x: 49, face: l (E)
+                    if initmap[posx+100][49] == '.':
+                        posy = posx + 100
+                        posx = 49
+                        face = 'l'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                elif 100 <= posx < 150:
+                    # continue at y: posx - 50, x: 99, face: l  (A)
+                    if initmap[posx-50][99] == '.':
+                        posy = posx - 50
+                        posx = 99
+                        face = 'l'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                break
             elif initmap[posy+1][posx] == '#':
                 break
             else:
                 posy += 1
     elif face == 'u':
+        print('Debug: Moving u', count, posx, posy, mv, face)
         for step in range(mv):
             if posy - 1 < miny[posx]:
-                print("Moving up, wrap", posx, miny[posx], maxy[posx])
-                if initmap[maxy[posx]-1][posx] == '.':
-                    posy = maxy[posx] - 1
-                else:
-                    break
-                posy = maxy[posx] - 1
+                if 0 <= posx < 50:
+                    # continue at y: posx + 50, x: 50, face: r (C)
+                    if initmap[posx+50][50] == '.':
+                        posy = posx + 50
+                        posx = 50
+                        face= 'r'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                elif 50 <= posx < 100:
+                    # continue at y: posx + 100, x: 0, face: r (F)
+                    if initmap[posx+100][0] == '.':
+                        posy = posx + 100
+                        posx = 0
+                        face = 'r'
+                        move[count] = mv - (step + 1)
+                        continue_move = True
+                elif 100 <= posx < 150:
+                    # continue at y: 199 , x: posx - 100, face: u (G)
+                    # direction remains, just re-x,y and continue
+                    if initmap[199][posx-100] == '.':
+                        posy = 199
+                        posx = posx - 100
+                        continue_move = False ## Required?
+                        continue
+                break
             elif initmap[posy-1][posx] == '#':
                 break
             else:
                 posy -= 1
+    if continue_move:
+        continue
     if count == len(direction):
         break
     turn = direction[count]
@@ -354,6 +462,7 @@ for count in range(len(move)):
             face = 'u'
         else:
             face = 'r'
+    count += 1
 
 if face == 'r':
     fp = 0
