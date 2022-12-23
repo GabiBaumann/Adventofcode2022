@@ -222,6 +222,8 @@ Instead of switching choice of directions, the map could be transformed. (180 de
 After 10 steps, rectangle is defined by minx, miny, maxx, maxy of elves positions. Sub total number of elves.
 
 Todo: make grids consist of False/True rather than ''/'#'
+
+Uaah: If no other elves are on any of the 8 surrounding pos, it does nothing!
 """
 
 from copy import deepcopy as cp
@@ -341,8 +343,7 @@ for i in range(len(grid)):
         o = o + grid[i][j].replace('', '.').replace('.#.', '#')
     print(o)
 
-#for count in range(10):
-for count in range(2):
+for count in range(10):
     rc = [rule[count%4],rule[(count+1)%4],rule[(count+2)%4],rule[(count+3)%4]]
     print('Ruleset:', rc)
     nextgrid = cp(grid)
@@ -351,7 +352,7 @@ for count in range(2):
     cdir = [] # all these should be auto-empty, but this anchors to global.
     for y in range(len(grid)):
         for x in range(len(grid[0])):
-            if grid[y][x]:
+            if grid[y][x] and (grid[y-1][x-1] or grid[y-1][x] or grid[y-1][x+1] or grid[y][x-1] or grid[y][x+1] or grid[y+1][x-1] or grid[y+1][x] or grid[y+1][x+1]):
                 move_elf(x, y) # rc and conflict lists are global
     grid = cp(nextgrid)
     for i in range(len(grid)):
@@ -376,7 +377,7 @@ for y in range(len(grid)):
             maxx = max(maxx, x)
 
 print(minx, miny, maxx, maxy, no_elfs)
-print((2+maxy-miny) * (2+maxx-minx) - no_elfs)
+print((1+maxy-miny) * (1+maxx-minx) - no_elfs)
 
 ## mööp.
 # 4165 is too high
