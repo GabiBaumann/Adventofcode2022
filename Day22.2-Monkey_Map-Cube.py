@@ -476,5 +476,6 @@ else:
 print(posy, posx, face)
 print( (posy+1) * 1000 + (posx+1) * 4 + fp )
 
-# Example: 6032
-# Input: 131052 (130, 12, r)
+# 3 143 l (4k+144*4+2
+# 4578
+
