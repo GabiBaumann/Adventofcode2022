@@ -112,4 +112,4 @@ s3 = work[(i + 3000) % length]
 print(s1, s2, s3)
 print(s1 + s2 + s3)
 
-# 13685
+# 13685 is too much.
