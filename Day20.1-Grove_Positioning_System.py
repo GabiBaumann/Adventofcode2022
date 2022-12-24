@@ -69,7 +69,8 @@ ref = []
 pos = []
 length = 0
 
-with open('Day20-Input--Debug', 'r') as file:
+#with open('Day20-Input--Debug', 'r') as file:
+with open('Day20-Input', 'r') as file:
     for line in file:
         number = int(line)
         work.append(number)
@@ -79,10 +80,36 @@ with open('Day20-Input--Debug', 'r') as file:
 
 for count in range(length):
     number = ref[count]
-    position = pos[i]
-    nextpos = (position + number) % length
+    rnum = number % (length - 1)
+    position = pos[count]
+    nextpos = (rnum + position) % (length - 1)
+    #print(pos)
+    #print(work)
+    print(length, count, number, rnum, position, nextpos)
     if nextpos > position:
-        for i in range(position+1,nextpos):
-            print("Ewww. Need to do reverse pos lookup, it's not in ordered range.")    
-            print("Or rather: go through pos list, and work on all values in range!")
+        for i in range(position+1,nextpos+1):
+            if pos[i] in range(position+1, nextpos+1):
+                pos[i] -= 1
+            work[i-1] = work[i]
+        pos[count] = nextpos
+        work[nextpos] = number
+    elif nextpos < position:
+        for i in range(position-1, nextpos-1, -1): # +-1
+            if pos[i] in range(position-1, nextpos-1, -1):
+                pos[i] += 1
+            work[i+1] = work[i]
+        pos[count] = nextpos
+        work[nextpos] = number
 
+for i in range(length):
+    if work[i] == 0:
+        break
+print(i, length)
+s1 = work[(i + 1000) % length]
+s2 = work[(i + 2000) % length]
+s3 = work[(i + 3000) % length]
+
+print(s1, s2, s3)
+print(s1 + s2 + s3)
+
+# 13685
