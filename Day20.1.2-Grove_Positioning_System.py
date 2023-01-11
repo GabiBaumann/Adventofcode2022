@@ -65,6 +65,8 @@ Keep a pair of lists for items and positions, shifting positions for the affecte
 """
 
 """
+--- Part Two ---
+
 The grove coordinate values seem nonsensical. While you ponder the mysteries of Elf encryption, you suddenly remember the rest of the decryption routine you overheard back at camp.
 
 First, you need to apply the decryption key, 811589153. Multiply each number by the decryption key before you begin; this will produce the actual list of numbers to mix.
@@ -111,7 +113,12 @@ The grove coordinates can still be found in the same way. Here, the 1000th numbe
 Apply the decryption key and mix your encrypted file ten times. What is the sum of the three numbers that form the grove coordinates?
 """
 
-work = []
+key = 811589153 # pt2
+#key = 1         # pt1
+
+rounds = 10     # pt2
+#rounds = 1      # pt1
+
 ref = []
 pos = []
 length = 0
@@ -119,36 +126,56 @@ length = 0
 #with open('Day20-Input--Debug', 'r') as file:
 with open('Day20-Input', 'r') as file:
     for line in file:
-        number = int(line)
-        work.append(number)
+        number = int(line) * key
+        ref.append(number)
+        pos.append(length)
         length += 1
 
-count = 0
-while count < length:
-    val = work.pop(0)
-    
-    if isinstance(val, int) :
-        index = val % (length - 1)
-        work.insert(index, (val,))
-        count += 1
-    else:
-        work.append(val)
-    #print(work)
+for iteration in range(rounds):
+    print(iteration)
+    for count in range(length):
+        number = ref[count]
+        position = pos[count]
+        nextpos = (number + position) % (length - 1)
+        if nextpos > position:
+            for i in range(length):
+                if pos[i] in range(position+1, nextpos+1):
+                    pos[i] -= 1
+            pos[count] = nextpos
+        elif nextpos < position:
+            for i in range(length): # +-1
+                if pos[i] in range(position-1, nextpos-1, -1):
+                    pos[i] += 1
+            pos[count] = nextpos
 
+for count in range(length):
+    if ref[count] == 0:
+        zeropos = pos[count]
+        break
 
-for i in range(length):
-    work[i] = work[i][0]
-    if work[i] == 0:
-        start = i
+ps1 = (zeropos + 1000) % length
+ps2 = (zeropos + 2000) % length
+ps3 = (zeropos + 3000) % length
 
-print(work)
-print(start, length)
-s1 = work[(start + 1000) % length]
-s2 = work[(start + 2000) % length]
-s3 = work[(start + 3000) % length]
+for count in range(length):
+    if pos[count] == ps1:
+        s1 = ref[count]
+    if pos[count] == ps2:
+        s2 = ref[count]
+    if pos[count] == ps3:
+        s3 = ref[count]
 
 print(s1, s2, s3)
 print(s1 + s2 + s3)
 
-# 13685 is too much.
-# 4151
+# pt2 example
+# 811589153 2434767459 -1623178306
+# 1623178306
+
+# pt2 input
+# 6596596635584 3166820875006 -1914538811927
+# 7848878698663
+
+# pt 1
+# after round 1:
+# 4151  // 150 -5365 9366
