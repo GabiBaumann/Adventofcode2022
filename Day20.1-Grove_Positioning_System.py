@@ -65,51 +65,41 @@ Keep a pair of lists for items and positions, shifting positions for the affecte
 """
 
 work = []
-ref = []
-pos = []
 length = 0
 
-#with open('Day20-Input--Debug', 'r') as file:
-with open('Day20-Input', 'r') as file:
+with open('Day20-Input--Debug', 'r') as file:
+#with open('Day20-Input', 'r') as file:
     for line in file:
         number = int(line)
         work.append(number)
-        ref.append(number)
-        pos.append(length)
         length += 1
 
-for count in range(length):
-    number = ref[count]
-    rnum = number % (length - 1)
-    position = pos[count]
-    nextpos = (rnum + position) % (length - 1)
-    #print(pos)
+count = 0
+while count < length:
+    val = work.pop(0)
+    
+    if isinstance(val, int) :
+        index = val % (length - 1)
+        work.insert(index, (val,))
+        count += 1
+    else:
+        work.append(val)
     #print(work)
-    print(length, count, number, rnum, position, nextpos)
-    if nextpos > position:
-        for i in range(position+1,nextpos+1):
-            if pos[i] in range(position+1, nextpos+1):
-                pos[i] -= 1
-            work[i-1] = work[i]
-        pos[count] = nextpos
-        work[nextpos] = number
-    elif nextpos < position:
-        for i in range(position-1, nextpos-1, -1): # +-1
-            if pos[i] in range(position-1, nextpos-1, -1):
-                pos[i] += 1
-            work[i+1] = work[i]
-        pos[count] = nextpos
-        work[nextpos] = number
+
 
 for i in range(length):
+    work[i] = work[i][0]
     if work[i] == 0:
-        break
-print(i, length)
-s1 = work[(i + 1000) % length]
-s2 = work[(i + 2000) % length]
-s3 = work[(i + 3000) % length]
+        start = i
+
+print(work)
+print(start, length)
+s1 = work[(start + 1000) % length]
+s2 = work[(start + 2000) % length]
+s3 = work[(start + 3000) % length]
 
 print(s1, s2, s3)
 print(s1 + s2 + s3)
 
 # 13685 is too much.
+# 4151
