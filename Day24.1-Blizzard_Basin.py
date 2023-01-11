@@ -244,6 +244,7 @@ What is the fewest number of minutes required to avoid the blizzards and reach t
 
 """
 Thus thing is 35x100, it repeats itself after 700 steps.
+(Example is 4x6, repeating after 12 steps).
 
 First hunch: iterate a whole period, saving all empty floor tiles for each step.
 Recurse through possible moves, preferring towards exit.
@@ -253,3 +254,115 @@ Optimum without blizzards is 100+35+2 steps taken.
 Waiting adds one minute, moving left or up two.
 """
 
+from copy import deepcopy as cp
+
+visited = []
+path = []
+l_paths = []
+blz = {}
+line_no = 0
+index = 0
+not_repeated = True
+starttimes = []
+cutoff = 10000
+
+def find_path(step, y, x):
+    global cutoff
+
+    if y == maxline - 1 and x == maxcol - 1:
+        print(step, 'me there!')
+        return step
+    if step in visited[y][x]:
+        return cutoff
+    visited[y][x].append(step)
+    step += 1
+    pit = step % full_circle
+    if step >= cutoff - (((maxline-1) - y) + ((maxcol-1) - x)):
+        return cutoff
+    if y < maxline - 1 and l_paths[pit][y+1][x]:
+        result = find_path(step, y+1, x)
+        cutoff = min(cutoff, result)
+    if x < maxcol - 1 and l_paths[pit][y][x+1]:
+        result = find_path(step, y, x+1)
+        cutoff = min(cutoff, result)
+    if l_paths[pit][y][x]: #wait
+        result = find_path(step, y, x)
+        cutoff = min(cutoff, result)
+    if y > 0 and l_paths[pit][y-1][x]:
+        result = find_path(step, y-1, x)
+        cutoff = min(cutoff, result)
+    if x > 0 and l_paths[pit][y][x-1]:
+        result = find_path(step, y, x-1)
+        cutoff = min(cutoff, result)
+    return cutoff
+
+#with open('Day24-Input--Debug', 'r') as file:
+with open('Day24-Input', 'r') as file:
+    for line in file:
+        line = line.rstrip().strip('#')
+        if line == '.':
+            continue
+        v_init = []
+        p_init = []
+        for i in range(len(line)):
+            v_init.append([])
+            if line[i] == '.':
+                p_init.append(True)
+                continue
+            p_init.append(False)
+            blz[index] = {}
+            blz[index]['x'] = i
+            blz[index]['y'] = line_no
+            blz[index]['d'] = line[i]
+            index += 1
+        visited.append(v_init)
+        path.append(p_init)
+        line_no += 1
+        
+maxcol = len(path[0])
+maxline = line_no
+print('maxcol', maxcol, 'maxline', maxline)
+l_paths.append(cp(path))
+
+while True:
+    for y in range(maxline):
+        for x in range(maxcol):
+            path[y][x] = True
+    for index in blz:
+        if blz[index]['d'] == '<':
+            blz[index]['x'] = (blz[index]['x'] - 1) % maxcol
+        elif blz[index]['d'] == '>':
+            blz[index]['x'] = (blz[index]['x'] + 1) % maxcol
+        elif blz[index]['d'] == '^':
+            blz[index]['y'] = (blz[index]['y'] - 1) % maxline
+        else:
+            blz[index]['y'] = (blz[index]['y'] + 1) % maxline
+        path[blz[index]['y']][blz[index]['x']] = False
+    if path == l_paths[0]:
+        break
+    l_paths.append(cp(path))
+
+full_circle = len(l_paths)
+last = False
+
+for i in range(full_circle):
+    if l_paths[i][0][0]:
+        if last == True:
+            continue
+        starttimes.append(i)
+        last = True
+    else:
+        last = False
+print(starttimes)
+
+for st in starttimes:
+    print('Starting at', st)
+    result = find_path(st, 0, 0)
+    cutoff = min(cutoff, result)
+
+#print(visited)
+# add last step. First should be in st
+print(cutoff+1)
+
+# Example: 18
+# Result, first attempt: 247
